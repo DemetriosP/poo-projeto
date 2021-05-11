@@ -1,6 +1,10 @@
 package ifnet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Grupo {
 	
@@ -15,6 +19,7 @@ public class Grupo {
 		this.disciplina = disciplina;
 		this.criador = usuarioAtual;
 		this.tipo = tipo;
+		this.usuariosGrupo.add(usuarioAtual);
 	}
 	
 	public String getNome() {
@@ -57,21 +62,18 @@ public class Grupo {
 		this.tipo = tipo;
 	}
 	
-	public static void consultarGrupoMaisUsuarios(ArrayList<Grupo> grupos) {
+	public static Map<Integer, Integer> consultarGrupoMaisUsuarios(ArrayList<Grupo> grupos) {
 		
-		Grupo grupoAlt ;
+		Map<Integer,Integer> maisUsuarios = new HashMap<Integer, Integer>();
 		
-		int priPo, segPo;
-		
-		for(priPo = 0; priPo < grupos.size(); priPo++ ) {
-			for(segPo = 0; segPo < grupos.size(); segPo++) {
-				if(grupos.get(priPo).getUsuariosGrupo().size() < grupos.get(segPo).getUsuariosGrupo().size()) {
-					grupoAlt = grupos.get(priPo);
-					grupos.add(priPo, grupos.get(segPo));
-					grupos.add(segPo, grupoAlt);
-				};
-			}
+		for(Grupo grupo:grupos) {
+			maisUsuarios.put(grupos.indexOf(grupo), grupo.getUsuariosGrupo().size());
 		}
+		
+		Map<Integer, Integer> maisUsuariosOrdenado = maisUsuarios.entrySet().stream().sorted((e1,e2)->
+        e2.getValue().compareTo(e1.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+		
+		return maisUsuariosOrdenado;
 	}
 	
 	public static ArrayList<Grupo> consultarGpPesquisaPorDisciplina(ArrayList<Grupo> grupos, Disciplina disciplina) {

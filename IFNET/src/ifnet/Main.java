@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import excecoes.GrauConfiabilidadeAtualException;
 import excecoes.OpcaoInexistenteException;
 import excecoes.UsuarioCadastradoException;
 
@@ -12,35 +13,24 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		//cria os ArrayList onde as classes ficaram salvas
 		ArrayList<Area> areas = new ArrayList<Area>();
 		ArrayList<Disciplina> disciplinas = new ArrayList<Disciplina>();
-		disciplinas.add(new Disciplina("Algoritimo"));
-		disciplinas.add(new Disciplina("Engenharia de Software"));
-		disciplinas.add(new Disciplina("Mátematica Básica"));
-		disciplinas.add(new Disciplina("Linguagem e Programação I"));
 		ArrayList<Curso> cursos = new ArrayList<Curso>();
-		cursos.add(new Curso("Analise e Desenvolvimento de Sistemas"));
 		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
-		usuarios.add(new Aluno("Demetrios", "BP3007685", "creed159", "pantaleao15@hotmail.com", cursos.get(0)));
-		usuarios.add(new Professor("David", "BP3009658", "prof123", new Area("Tecnologia"), disciplinas.get(3)));
-		usuarios.add(new Professor("Roberto", "BP3009679", "prof321", new Area("Mátematica"), disciplinas.get(2)));
 		ArrayList<Conteudo> conteudos = new ArrayList<Conteudo>();
-		conteudos.add(new Conteudo("Principos da Programação", "Livro", usuarios.get(1)));
-		conteudos.add(new Conteudo("Video Aula de Estatistica", "Video", usuarios.get(0)));
 		ArrayList<Grupo> grupos = new ArrayList<Grupo>();
-		grupos.add(new Grupo("Pré Projeto TCC", disciplinas.get(0), usuarios.get(1), "Trabalho"));
-		grupos.add(new Grupo("Praticar Mátematica", disciplinas.get(2), usuarios.get(2), "Pesquisa"));
-		grupos.add(new Grupo("Aulas de Mátematica", disciplinas.get(2), usuarios.get(2), "Trabalho"));
 		ArrayList<Grupo> grupoAlt = new ArrayList<Grupo>();
 		ArrayList<Conteudo> conteudoAlt = new ArrayList<Conteudo>();
 		ArrayList<Disciplina> disciplinaAlt = new ArrayList<Disciplina>();
 		ArrayList<Usuario> usuariosAlt = new ArrayList<Usuario>();
+		ArrayList<Usuario> usuariosMapa = new ArrayList<Usuario>();
 		ArrayList<Curso> cursoAlt = new ArrayList<Curso>();
 		Map<Integer,Integer> maisRelacionados = new HashMap<Integer, Integer>();
+		Map<Integer,Integer> maisUsuarios = new HashMap<Integer, Integer>();
 		
 		Scanner leitura = new Scanner(System.in);
 		
+		Usuario usu = null;
 		Curso cur = null;
 		Disciplina disc = null;
 		Grupo grup = null;
@@ -50,9 +40,61 @@ public class Main {
 		Area areaCadastro;
 		Usuario usuarioAtual = null;
 		boolean comecar = true, sair = true, voltar = true, entrou = false, prosseguir = false, cadastro = false, relacionar = false;
-		String opcao = "", prontuario = "", senha, nome, tipo, titulo, grauConf[] = {"Conhecido", "Amigo", "Melhores Amigos"};	
-		int posicao = -1, semestre, semestres, grau, grauAtual = -1, novoGrau = -1;
-	
+		String opcao = "", prontuario = "", senha, nome, tipo, titulo, grauConf[] = {"Conhecidos", "Amigos", "Melhores Amigos"};	
+		int posicao = -1, semestre = 0, semestres = 0, grau, grauAtual = -1, novoGrau = -1, volta;
+		
+		disciplinas.add(new Disciplina("Algoritimo"));
+		disciplinas.add(new Disciplina("Engenharia de Software"));
+		disciplinas.add(new Disciplina("Mátematica Básica"));
+		disciplinas.add(new Disciplina("Linguagem e Programação I"));
+		
+		cursos.add(new Curso("Bacharelado em Engenharia de Controle e Automação"));
+		cursos.add(new Curso("Licenciatura em Matemática"));
+		cursos.add(new Curso("Tecnologia em Análise e Desenvolvimento de Sistemas"));
+		cursos.add(new Curso("Tecnologia em Mecatrônica Industrial"));
+		
+		usuarios.add(new Aluno("Demetrios", "BP3007685", "dem123", "demetrios@hotmail.com", cursos.get(0)));
+		usuarios.add(new Aluno("David", "BP3007895", "dav123", "david@hotmail.com", cursos.get(1)));
+		usuarios.add(new Aluno("Victor", "BP3007469", "vic123", "victor@hotmail.com", cursos.get(2)));
+		usuarios.add(new Professor("Luiz", "BP3009658", "lu123", new Area("Tecnologia"), disciplinas.get(3)));
+		usuarios.add(new Professor("Roberto", "BP3009679", "ro123", new Area("Mátematica"), disciplinas.get(2)));
+		usuarios.add(new Professor("Julio", "BP3009980", "ju123", new Area("Engenharia"), disciplinas.get(1)));
+		
+		Relacionamento.relacionarUsuario(usuarios.get(0), usuarios.get(1));
+		Relacionamento.relacionarUsuario(usuarios.get(0), usuarios.get(2));
+		Relacionamento.relacionarUsuario(usuarios.get(0), usuarios.get(3));
+		Relacionamento.relacionarUsuario(usuarios.get(0), usuarios.get(4));
+		Relacionamento.relacionarUsuario(usuarios.get(0), usuarios.get(5));
+		
+		Relacionamento.relacionarUsuario(usuarios.get(1), usuarios.get(2));
+		Relacionamento.relacionarUsuario(usuarios.get(1), usuarios.get(3));
+		
+		Relacionamento.relacionarUsuario(usuarios.get(2), usuarios.get(3));
+		Relacionamento.relacionarUsuario(usuarios.get(2), usuarios.get(4));
+		
+		conteudos.add(new Conteudo("Principos da Programação", "Livro", usuarios.get(0)));
+		conteudos.add(new Conteudo("Video Aula de Estatistica", "Video", usuarios.get(4)));
+		conteudos.add(new Conteudo("Números Racionais", "Video", usuarios.get(1)));
+		conteudos.add(new Conteudo("Metodologias Ágeis", "Matéria", usuarios.get(3)));
+		
+		grupos.add(new Grupo("Pré Projeto TCC", disciplinas.get(0), usuarios.get(5), "Trabalho"));
+		grupos.add(new Grupo("Como fazer contas mais rápido", disciplinas.get(2), usuarios.get(4), "Pesquisa"));
+		grupos.add(new Grupo("Aulas de Mátematica", disciplinas.get(2), usuarios.get(4), "Trabalho"));
+		grupos.add(new Grupo("Praticar Java", disciplinas.get(3), usuarios.get(3), "Trabalho"));
+		grupos.add(new Grupo("Métodos de linguagens orientadas a objeto", disciplinas.get(3), usuarios.get(3), "Pesquisa"));
+		
+		grupos.get(0).setUsuariosGrupo(usuarios.get(0));
+		grupos.get(1).setUsuariosGrupo(usuarios.get(1));
+		grupos.get(2).setUsuariosGrupo(usuarios.get(2));
+		grupos.get(3).setUsuariosGrupo(usuarios.get(0));
+		grupos.get(4).setUsuariosGrupo(usuarios.get(1));
+		
+		grupos.get(0).setUsuariosGrupo(usuarios.get(1));
+		grupos.get(1).setUsuariosGrupo(usuarios.get(2));
+		grupos.get(2).setUsuariosGrupo(usuarios.get(0));
+		grupos.get(3).setUsuariosGrupo(usuarios.get(1));
+		grupos.get(4).setUsuariosGrupo(usuarios.get(2));
+		
 		while(comecar) {
 			
 			do {
@@ -135,6 +177,7 @@ public class Main {
 									
 									System.out.println("Cadastro realizado com sucesso!");
 									
+									break;
 								case "2":
 									
 									System.out.print("Informe a área: ");
@@ -156,6 +199,7 @@ public class Main {
 									
 									System.out.println("Cadastro realizado com sucesso!");
 									
+									break;
 								default:
 									System.out.println("Opção inválida");
 							}
@@ -210,7 +254,7 @@ public class Main {
 											
 											posicao = Integer.parseInt(leitura.nextLine());
 											
-											if(posicao >= conteudoAlt.size()) {
+											if(posicao >= conteudoAlt.size() || posicao < 0) {
 												throw new OpcaoInexistenteException();
 											}
 											
@@ -312,7 +356,9 @@ public class Main {
 										}else System.out.println("Resultado da busca");
 										
 										for(Usuario usuario:usuariosAlt) {
-											System.out.println(usuariosAlt.indexOf(usuario) +". " + usuario.getNome());
+											if(usuarios.indexOf(usuario) != usuarios.indexOf(usuarioAtual)){
+												System.out.println(usuariosAlt.indexOf(usuario) +". " + usuario.getNome());
+											}
 										}
 										
 										System.out.println("Informe o número do usuário desejado: ");
@@ -321,10 +367,11 @@ public class Main {
 											
 											posicao = Integer.parseInt(leitura.nextLine());
 											
-											if(posicao >= usuariosAlt.size()) {
+											if(posicao >= usuariosAlt.size() || posicao < 0 || posicao == usuariosAlt.indexOf(usuarioAtual)) {
 												throw new OpcaoInexistenteException();
 											}
 											
+											usu = usuariosAlt.get(posicao);
 											prosseguir = true;
 											
 										} catch (NumberFormatException excecao) {
@@ -361,97 +408,110 @@ public class Main {
 										break;
 									case "2":
 										
-										relacionar = Relacionamento.relacionarUsuario(usuarioAtual, usuariosAlt.get(posicao));
+										relacionar = Relacionamento.relacionarUsuario(usuarioAtual, usuarios.get(usuarios.indexOf(usu)));
 										
 										if(relacionar) System.out.println("O relacionamento foi criado");
 										else System.out.println("O usuário atual e o usuário informado já estão relacionados");
 										
 										break;
 									case "3":
-										
-										System.out.println("Usuários Relacionados");
-										for (Map.Entry<Integer , ArrayList<Usuario>> mapa : usuarioAtual.getRelacionamento().getGrauUsuario().entrySet()) { 
-											
-											grau = mapa.getKey();
-											usuariosAlt = mapa.getValue();
 
-											System.out.println("Grau de Confiabidade: " + grauConf[grau]);
+										if(Relacionamento.estaRelacionado(usuarioAtual, usu)) {
 											
-											for(Usuario usuario:usuarios) {
-												System.out.println(usuarios.indexOf(usuario) + "Usuário: " + usuario.getNome());
+											for (Map.Entry<Integer , ArrayList<Usuario>> mapa : usuarioAtual.getRelacionamento().getGrauUsuario().entrySet()) { 
+												
+												usuariosMapa = mapa.getValue();
+												grau = mapa.getKey();
+												
+												for(Usuario usuario:usuariosMapa) {
+													if(usuario.getProntuario().equals(usu.getProntuario())) {
+														grauAtual = grau;
+														posicao = usuariosMapa.indexOf(usuario);
+													}
+												}
 											}
-
-											System.out.println();
 											
-										}
+											do{
 
-										do{
+												try {
+													
+													System.out.println("Grau de Confiabilidade Atual: " + grauConf[grauAtual]);
+													
+													System.out.println("Graus de confiabilidade\n0.Conhecidos\n1.Amigos\n2.Amigos Próximos");
+													
+													System.out.print("Informe o número do grau de confiabilidade para o qual a relação será alterada: ");
+													novoGrau = Integer.parseInt(leitura.nextLine());
+													
+													if(novoGrau == grauAtual) {
+														throw new GrauConfiabilidadeAtualException();
+													}
+													
+													if(novoGrau > 2 || novoGrau < 0) {
+														throw new OpcaoInexistenteException();
+													}
 
-											try {
+													prosseguir = true;
+													
+												} catch (NumberFormatException excecao) {
+													System.out.println("O valor informado não é um número inteiro");
+												} catch (GrauConfiabilidadeAtualException excecao) {
+													System.out.println(excecao.getMessage());
+												} catch (OpcaoInexistenteException excecao) {
+													System.out.println(excecao.getMessage());
+													conteudoAlt.clear();
+												}
+
+											}while(!prosseguir);
+
+											prosseguir = false;
 											
-												System.out.print("Informe o número da relação da qual deseja alterar o grau de confiabilidade: ");
-												posicao = Integer.parseInt(leitura.nextLine());
-												
-												System.out.println("Graus de confiabilidade\n0.Conhecidos\n1.Amigos\n2.Amigos Próximos");
-												
-												System.out.print("Informe o número do grau de confiabilidade atual da relação: ");
-												grauAtual = Integer.parseInt(leitura.nextLine());
-												
-												System.out.print("Informe o número do grau de confiabilidade para o qual a relação será alterada: ");
-												novoGrau = Integer.parseInt(leitura.nextLine());
-
-												prosseguir = true;
-												
-											} catch (NumberFormatException excecao) {
-												System.out.println("O valor informado não é um número inteiro");
-											}
-
-										}while(!prosseguir);
-
-										prosseguir = false;
-										
-										Relacionamento.alterarGrauConfiabilidade(usuarioAtual, grauAtual, novoGrau, posicao);
-										
-										System.out.println("Grau de relacionamento alterado");
+											Relacionamento.alterarGrauConfiabilidade(usuarioAtual, grauAtual, novoGrau, posicao);
+											
+											System.out.println("Grau de Confiabilidade Alterado");
+											
+										}else System.out.println("Esses usuários não estão relacionados");
 										
 										break;
 									case "4":
 										
-										System.out.println("Usuários Relacionados");
-										for (Map.Entry<Integer , ArrayList<Usuario>> mapa : usuarioAtual.getRelacionamento().getGrauUsuario().entrySet()) { 
-											
-											grau = mapa.getKey();
-											usuariosAlt = mapa.getValue();
-											
-											for(Usuario usuario:usuarios) {
-												System.out.println(usuarios.indexOf(usuario) + "Usuário: " + usuario.getNome());
-											}
-											
-										}
-										
-										try {
-											
-											System.out.print("Informe o número da relação que deseja excluir: ");
-											posicao = Integer.parseInt(leitura.nextLine());
-											
-										} catch (NumberFormatException excecao) {
-											System.out.println("O valor informado não é um número inteiro");
-										}
-										
-										for (Map.Entry<Integer , ArrayList<Usuario>> mapa : usuarioAtual.getRelacionamento().getGrauUsuario().entrySet()) { 
-											usuariosAlt = mapa.getValue();
-											
-											for(Usuario usuario:usuarios) {
-												if(usuarios.indexOf(usuario) == posicao) {
-													usuariosAlt.remove(posicao);
-													break;
+										if(Relacionamento.estaRelacionado(usuarioAtual, usu)) {
+
+											for (Map.Entry<Integer , ArrayList<Usuario>> mapa : usuarioAtual.getRelacionamento().getGrauUsuario().entrySet()) { 
+																					
+												usuariosMapa = mapa.getValue();
+												grau = mapa.getKey();
+												
+												for(Usuario usuario:usuariosMapa) {
+													if(usuario.getProntuario().equals(usu.getProntuario())) {
+														grauAtual = grau;
+														posicao = usuariosMapa.indexOf(usuario);
+													}
 												}
 											}
 											
-										}
-										
-										System.out.println("Relacionamento excluido");
-										
+											do {
+												
+												System.out.println("Você tem certeza que deseja excluir o relacionamento? "
+														+ "\n1.Sim\n2.Não");
+												opcao = leitura.nextLine();
+												
+												switch(opcao) {
+												
+													case "1":
+														usuarioAtual.getRelacionamento().getGrauUsuario().get(grauAtual).remove(posicao);
+														System.out.println("Relacionamento excluído");
+														break;
+													case "2":
+														System.out.println("Relacionamento não excluído");
+														break;
+													default:
+														System.out.println("Opção invàlida");
+												}
+
+											}while(!opcao.equals("1") && !opcao.equals("2"));
+												
+										}else System.out.println("Você e o usuário selecionado não possuem relação");
+
 										break;
 									case "5":
 										
@@ -459,13 +519,12 @@ public class Main {
 										
 										System.out.println("TOP 10 Usuários mais relacionados");
 										
-										for (Map.Entry<Integer , Integer> mapa : maisRelacionados.entrySet()) { 
-								
-											for(int volta = 0; volta < 10; volta++) {
-												System.out.println("Usuário: " + usuarios.get(mapa.getKey()).getNome() + "Quantidade de relacionamentos: " + mapa.getValue());
-											}
-
-											break;
+										volta = 0;
+										
+										for (Map.Entry<Integer , Integer> mapa : maisRelacionados.entrySet()) {
+											System.out.println("Usuário: " + usuarios.get(mapa.getKey()).getNome() + "\nQuantidade de relacionamentos: " + mapa.getValue() + "\n");
+											volta++;
+											if(volta == 9) break;
 										}
 										
 										break;
@@ -502,7 +561,7 @@ public class Main {
 											
 											posicao = Integer.parseInt(leitura.nextLine());
 											
-											if(posicao >= grupoAlt.size()) {
+											if(posicao >= grupoAlt.size() || posicao < 0) {
 												throw new OpcaoInexistenteException();
 											}
 											
@@ -565,14 +624,14 @@ public class Main {
 												
 												posicao = Integer.parseInt(leitura.nextLine());
 												
-												if(posicao >= disciplinas.size()) {
-													throw new OpcaoInexistenteException("O valor informado não é um número inteiro");
+												if(posicao >= disciplinas.size() || posicao < 0) {
+													throw new OpcaoInexistenteException();
 												}
 												
 												prosseguir = true;
 												
 											} catch(NumberFormatException excecoes) {
-												System.out.println();
+												System.out.println("O valor informado não é um número inteiro");
 											} catch(OpcaoInexistenteException excecoes) {
 												System.out.println(excecoes.getMessage());
 												grupoAlt.clear();
@@ -590,18 +649,19 @@ public class Main {
 										
 									case "3":
 										
-										Grupo.consultarGrupoMaisUsuarios(grupos);
+										maisUsuarios = Grupo.consultarGrupoMaisUsuarios(grupos);
 										
 										System.out.println("TOP 10 Grupos com mais usuários");
 										
-										for(Grupo grupo:grupos) {
-											System.out.println("Nome: " + grupo.getNome() + 
-													" Quantidade de usuários: " + grupo.getUsuariosGrupo().size());
-											if(grupos.indexOf(grupo) == 9) break;
+										volta = 0;
+										
+										for (Map.Entry<Integer , Integer> mapa : maisUsuarios.entrySet()) {
+											System.out.println("Grupo: " + grupos.get(mapa.getKey()).getNome() + "\nQuantidade de usuários: " + mapa.getValue() + "\n");
+											volta++;
+											if(volta == 9) break;
 										}
 										
 										break;
-										
 									case "4":
 										
 										posicao = grupos.indexOf(grup);
@@ -638,7 +698,7 @@ public class Main {
 														System.out.println("Opção inválida");
 												}
 													
-											}while(!tipo.equals("1") && tipo.equals("2"));
+											}while(!tipo.equals("1") && !tipo.equals("2"));
 											
 											do {
 												
@@ -655,7 +715,7 @@ public class Main {
 													
 													posicao = Integer.parseInt(leitura.nextLine());
 													
-													if(posicao >= conteudos.size()) {
+													if(posicao >= conteudos.size() || posicao < 0) {
 														throw new OpcaoInexistenteException();
 													}
 													
@@ -764,6 +824,7 @@ public class Main {
 													usuarios.remove(usuarioAtual);
 													excluido = true;
 													System.out.println("Conta excluída");
+													break;
 												case "2":
 													excluido = false;
 													System.out.println("Conta não excluída");
@@ -777,6 +838,7 @@ public class Main {
 										if(excluido) {
 											sair = false;
 											entrou = false;
+											voltar = false;
 										}
 										
 										break;
@@ -820,7 +882,7 @@ public class Main {
 											
 											posicao = Integer.parseInt(leitura.nextLine());
 											
-											if(posicao >= disciplinaAlt.size()) {
+											if(posicao >= disciplinaAlt.size() || posicao < 0) {
 												throw new OpcaoInexistenteException();
 											}
 											
@@ -928,7 +990,7 @@ public class Main {
 											
 											posicao = Integer.parseInt(leitura.nextLine());
 											
-											if(posicao >= cursoAlt.size()) {
+											if(posicao >= cursoAlt.size() || posicao < 0) {
 												throw new OpcaoInexistenteException();
 											}
 											
@@ -969,10 +1031,24 @@ public class Main {
 										System.out.println("Cadastrar Curso");
 										
 										System.out.println("Informe o nome do curso: ");
-										nome = leitura.next();
-										
-										System.out.println("Informe a quantidade de semestres do curso: ");
-										semestres = Integer.parseInt(leitura.next());
+										nome = leitura.nextLine();
+
+										do{
+
+											try{
+
+											System.out.println("Informe a quantidade de semestres do curso: ");
+											semestres = Integer.parseInt(leitura.nextLine());
+
+											prosseguir = true;
+
+											}catch(NumberFormatException excecoes) {
+												System.out.println("O valor informado não é um número inteiro");
+											}
+
+										}while(!prosseguir);
+
+										prosseguir = false;
 										
 										cur = new Curso(nome, semestres);
 										
@@ -992,7 +1068,7 @@ public class Main {
 												try {
 													posicao = Integer.parseInt(leitura.nextLine());
 													
-													if(posicao >= disciplinas.size()) {
+													if(posicao >= disciplinas.size() || posicao < 0) {
 														throw new OpcaoInexistenteException();
 													}
 													
@@ -1004,13 +1080,35 @@ public class Main {
 													System.out.println(excecao.getMessage());
 												}
 											
-											}while(prosseguir);
-											
-											System.out.println("Informe o semetre da disciplina");
-											semestre = Integer.parseInt(leitura.nextLine());
-											
+											}while(!prosseguir);
+
+											prosseguir = false;
+
+											do{
+
+												try{
+
+												System.out.println("Informe o semetre da disciplina");
+												semestre = Integer.parseInt(leitura.nextLine());
+
+												if(semestre > semestres || semestre  < 0) {
+														throw new OpcaoInexistenteException();
+													}
+
+												prosseguir = true;
+
+												}catch(NumberFormatException excecoes) {
+													System.out.println("O valor informado não é um número inteiro");
+
+												}catch (OpcaoInexistenteException excecao) {
+													System.out.println(excecao.getMessage());
+												}
+
+											}while(!prosseguir);
+
+											prosseguir = false;
+
 											cur.setDisciplinasPorSemestre(semestre, disciplinas.get(posicao));
-											
 											
 											do {
 												System.out.println("Deseja cadastrar outra disciplina no curso?\n1. Sim\n2. Não");
@@ -1025,8 +1123,6 @@ public class Main {
 										cursos.add(cur);
 										
 										System.out.println("Curso cadastrado");
-										
-										prosseguir = false;
 				
 										break;
 									case "3":

@@ -2,7 +2,10 @@ package ifnet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class Relacionamento {
 	
@@ -81,9 +84,30 @@ public class Relacionamento {
 			tamanho = 0;
 		}
 		
-		maisRelacionados.values();
+		Map<Integer, Integer> maisRelacionadosOrdenado = maisRelacionados.entrySet().stream().sorted((e1,e2)->
+        e2.getValue().compareTo(e1.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 		
-		return maisRelacionados;
+		return maisRelacionadosOrdenado;
+	}
+	
+	public static boolean estaRelacionado(Usuario usuarioAtual, Usuario usuarioRelacionar) {
+		
+		Relacionamento relacionar = null;
+		ArrayList<Usuario> usuarios;
+		
+		relacionar = usuarioAtual.getRelacionamento();
+		
+		for (Map.Entry<Integer , ArrayList<Usuario>> mapa : relacionar.grauUsuario.entrySet()) { 
+			
+			usuarios = mapa.getValue();
+			
+			for(Usuario usuario:usuarios) {
+				if(usuario.getProntuario().equals(usuarioRelacionar.getProntuario())) return true;
+			}
+		}
+		
+		return false;
+		
 	}
 	
 }

@@ -32,7 +32,7 @@ public class Aluno extends Usuario{
 		return "Nome: " + getNome() + 
 				"\nProntuário: " + getProntuario() +
 				"\nE-mail: " + this.email +
-				"\nCurso: " + this.curso;
+				"\nCurso: " + this.curso.getNome();
 	}
 	
 	

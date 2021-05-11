@@ -34,7 +34,7 @@ public class Professor extends Usuario{
 	public String toString() {
 		return "Nome: " + getNome() + 
 				"\nProntu·rio: " + getProntuario() +
-				"\n¡rea: " + this.area +
+				"\n¡rea: " + this.area.getNome() +
 				"\nDisciplina: " + this.disciplMinistrada.getNome();
 	}
 	

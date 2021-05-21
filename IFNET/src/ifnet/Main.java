@@ -43,58 +43,6 @@ public class Main {
 		String opcao = "", prontuario = "", senha, nome, tipo, titulo, grauConf[] = {"Conhecidos", "Amigos", "Melhores Amigos"};	
 		int posicao = -1, semestre = 0, semestres = 0, grau, grauAtual = -1, novoGrau = -1, volta;
 		
-		disciplinas.add(new Disciplina("Algoritimo"));
-		disciplinas.add(new Disciplina("Engenharia de Software"));
-		disciplinas.add(new Disciplina("Mátematica Básica"));
-		disciplinas.add(new Disciplina("Linguagem e Programação I"));
-		
-		cursos.add(new Curso("Bacharelado em Engenharia de Controle e Automação"));
-		cursos.add(new Curso("Licenciatura em Matemática"));
-		cursos.add(new Curso("Tecnologia em Análise e Desenvolvimento de Sistemas"));
-		cursos.add(new Curso("Tecnologia em Mecatrônica Industrial"));
-		
-		usuarios.add(new Aluno("Demetrios", "BP3007685", "dem123", "demetrios@hotmail.com", cursos.get(0)));
-		usuarios.add(new Aluno("David", "BP3007895", "dav123", "david@hotmail.com", cursos.get(1)));
-		usuarios.add(new Aluno("Victor", "BP3007469", "vic123", "victor@hotmail.com", cursos.get(2)));
-		usuarios.add(new Professor("Luiz", "BP3009658", "lu123", new Area("Tecnologia"), disciplinas.get(3)));
-		usuarios.add(new Professor("Roberto", "BP3009679", "ro123", new Area("Mátematica"), disciplinas.get(2)));
-		usuarios.add(new Professor("Julio", "BP3009980", "ju123", new Area("Engenharia"), disciplinas.get(1)));
-		
-		Relacionamento.relacionarUsuario(usuarios.get(0), usuarios.get(1));
-		Relacionamento.relacionarUsuario(usuarios.get(0), usuarios.get(2));
-		Relacionamento.relacionarUsuario(usuarios.get(0), usuarios.get(3));
-		Relacionamento.relacionarUsuario(usuarios.get(0), usuarios.get(4));
-		Relacionamento.relacionarUsuario(usuarios.get(0), usuarios.get(5));
-		
-		Relacionamento.relacionarUsuario(usuarios.get(1), usuarios.get(2));
-		Relacionamento.relacionarUsuario(usuarios.get(1), usuarios.get(3));
-		
-		Relacionamento.relacionarUsuario(usuarios.get(2), usuarios.get(3));
-		Relacionamento.relacionarUsuario(usuarios.get(2), usuarios.get(4));
-		
-		conteudos.add(new Conteudo("Principos da Programação", "Livro", usuarios.get(0)));
-		conteudos.add(new Conteudo("Video Aula de Estatistica", "Video", usuarios.get(4)));
-		conteudos.add(new Conteudo("Números Racionais", "Video", usuarios.get(1)));
-		conteudos.add(new Conteudo("Metodologias Ágeis", "Matéria", usuarios.get(3)));
-		
-		grupos.add(new Grupo("Pré Projeto TCC", disciplinas.get(0), usuarios.get(5), "Trabalho"));
-		grupos.add(new Grupo("Como fazer contas mais rápido", disciplinas.get(2), usuarios.get(4), "Pesquisa"));
-		grupos.add(new Grupo("Aulas de Mátematica", disciplinas.get(2), usuarios.get(4), "Trabalho"));
-		grupos.add(new Grupo("Praticar Java", disciplinas.get(3), usuarios.get(3), "Trabalho"));
-		grupos.add(new Grupo("Métodos de linguagens orientadas a objeto", disciplinas.get(3), usuarios.get(3), "Pesquisa"));
-		
-		grupos.get(0).setUsuariosGrupo(usuarios.get(0));
-		grupos.get(1).setUsuariosGrupo(usuarios.get(1));
-		grupos.get(2).setUsuariosGrupo(usuarios.get(2));
-		grupos.get(3).setUsuariosGrupo(usuarios.get(0));
-		grupos.get(4).setUsuariosGrupo(usuarios.get(1));
-		
-		grupos.get(0).setUsuariosGrupo(usuarios.get(1));
-		grupos.get(1).setUsuariosGrupo(usuarios.get(2));
-		grupos.get(2).setUsuariosGrupo(usuarios.get(0));
-		grupos.get(3).setUsuariosGrupo(usuarios.get(1));
-		grupos.get(4).setUsuariosGrupo(usuarios.get(2));
-		
 		while(comecar) {
 			
 			do {
@@ -168,10 +116,8 @@ public class Main {
 									String curso = leitura.nextLine();
 									
 									cursoCadastro = new Curso(curso);
-									
-									cursos.add(cursoCadastro);
-									
-									usuarios.add(new Aluno(nome, prontuario, senha, email, cursoCadastro));
+					
+									Usuario user = new Aluno(nome, prontuario, senha, email, cursoCadastro);
 									
 									cadastro = true;
 									

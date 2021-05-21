@@ -2,12 +2,16 @@ package ifnet;
 
 import java.util.ArrayList;
 
-public abstract class Usuario {
+public class Usuario {
 	
 	private String nome;
 	private String prontuario;
 	private String senha;
 	private Relacionamento relacionamento;
+	
+	public Usuario(String prontuario) {
+		this.prontuario = prontuario;
+	}
 	
 	public Usuario(String nome, String prontuario, String senha) {
 		this.nome = nome;
@@ -93,6 +97,8 @@ public abstract class Usuario {
 	}
 
 	@Override
-	public abstract String toString();
+	public String toString() {
+		return null;
+	}
 
 }

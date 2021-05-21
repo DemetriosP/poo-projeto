@@ -18,10 +18,6 @@ public class Professor extends Usuario{
 	public void setArea(Area area) {
 		this.area = area;
 	}
-	
-	public Disciplina getDiciplMinistrada() {
-		return disciplMinistrada;
-	}
 
 	public Disciplina getDisciplMinistrada() {
 		return disciplMinistrada;

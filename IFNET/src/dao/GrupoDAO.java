@@ -3,13 +3,17 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 
+import ifnet.Disciplina;
 import ifnet.Grupo;
+import ifnet.Professor;
 import ifnet.Usuario;
 
 public class GrupoDAO {
 	
-	public static void insere(Grupo grupo) {		
+	public void inserirGrupo(Grupo grupo) {		
 		
 		Conexao conexao = new Conexao();	
 		
@@ -29,18 +33,45 @@ public class GrupoDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		inserirUsuariosGrupo(grupo, grupo.getCriador());
+	}
+	
+	public void inserirUsuariosGrupo(Grupo grupo, Usuario usuario) {
+		
+		Conexao conexao = new Conexao();
+		
+		int grupoID = selecionaGrupoID(grupo);
+		
+		try {
+			
+			String query = "insert into usuarios_grupo (grupo_id, usuario_id) values (?,?)";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setInt(1, grupoID);
+			statement.setString(2, usuario.getProntuario());
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLIntegrityConstraintViolationException e) {
+			System.out.println("Erro");
+		} catch (SQLException e) {
+			System.out.println("Erro2");
+		}
 	}
 
-	public void inserirUsuariosGrupo(Grupo grupo) {
+	public static int selecionaGrupoID(Grupo grupo) {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
-		int grupo_id = 0;
+		int grupoID = 0;
 		
 		try {
 			
-			String query = "select grupo_id from grupo where nome like ? and disciplina_id like ? and usuario_id like ? and tipo like ?";
+			String query = "select grupo_id from grupo where nome like ? and disciplina_id like ? "
+					+ "and usuario_id like ? and tipo like ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
@@ -48,11 +79,11 @@ public class GrupoDAO {
 			statement.setString(2, grupo.getDisciplina().getNome());
 			statement.setString(3, grupo.getCriador().getProntuario());
 			statement.setString(4, grupo.getTipo());
-			
+
 			resultado = statement.executeQuery();
 			
-			if(resultado != null && resultado.next()){
-				grupo_id = resultado.getInt("grupo_id");
+			while(resultado != null && resultado.next()){
+				grupoID = resultado.getInt("grupo_id");
 			}
 			
 			statement.close();
@@ -61,25 +92,79 @@ public class GrupoDAO {
 			e.printStackTrace();
 		}
 		
-		for(Usuario usuario:grupo.getUsuariosGrupo()) {
+		return grupoID;
+	}
+	
+	public ArrayList<Grupo> selecionaGrupo() {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		ArrayList<Grupo> grupos = new ArrayList<Grupo>();
+		Grupo grupo = null;
+		String nome, disciplina, usuario, tipo;
+		
+		try {
 			
-			try {
+			String query = "select * from grupo";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+		
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				nome = resultado.getString("nome");
+				disciplina = resultado.getString("disciplina_id");
+				usuario = resultado.getString("usuario_id");
+				tipo = resultado.getString("tipo");
 				
-				String query = "insert into usuarios_grupo (grupo_id, usuario_id) values (?,?)";
-				
-				PreparedStatement statement = conexao.getConexao().prepareStatement(query);
-				
-				statement.setInt(1, grupo_id);
-				statement.setString(2, usuario.getProntuario());
-				statement.execute();
-				statement.close();
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
+				grupo = new Grupo(nome, new Disciplina(disciplina), new Professor(usuario), tipo);
+				grupos.get(grupos.indexOf(grupo)).setUsuariosGrupo(selecionaUsuariosGrupo(grupo));
 			}
 			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		
+		return grupos;
+	}
+	
+	public ArrayList<Usuario> selecionaUsuariosGrupo(Grupo grupo) {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		int grupoID = selecionaGrupoID(grupo);
+		
+		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
+		
+		String usuario = null;
+		
+		try {
+			
+			String query = "select usuario_id from usuarios_grupo where grupo_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setInt(1, grupoID);
+		
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				usuario = resultado.getString("usuario_id");
+			}
+			
+			usuarios.add(new Usuario(usuario));
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return usuarios;
 	}
 
 }

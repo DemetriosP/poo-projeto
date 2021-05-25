@@ -11,10 +11,10 @@ public class Grupo {
 	private String nome;
 	private Disciplina disciplina;
 	private ArrayList<Usuario> usuariosGrupo = new ArrayList<Usuario>();
-	private Usuario criador;
+	private Professor criador;
 	private String tipo;
-		
-	public Grupo(String nome, Disciplina disciplina, Usuario usuarioAtual, String tipo) {
+	
+	public Grupo(String nome, Disciplina disciplina, Professor usuarioAtual, String tipo) {
 		this.nome = nome;
 		this.disciplina = disciplina;
 		this.criador = usuarioAtual;
@@ -42,8 +42,8 @@ public class Grupo {
 		return usuariosGrupo;
 	}
 
-	public void setUsuariosGrupo(Usuario usuario) {
-		this.usuariosGrupo.add(usuario);
+	public void setUsuariosGrupo(ArrayList<Usuario> usuario) {
+		this.usuariosGrupo = usuario;
 	}
 	
 	public Usuario getCriador() {
@@ -108,7 +108,5 @@ public class Grupo {
 				"\nCriador: " + this.criador.getNome() + 
 				"\nTipo: " + this.tipo;
 	}
-	
-	
 
 }

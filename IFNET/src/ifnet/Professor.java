@@ -5,6 +5,10 @@ public class Professor extends Usuario{
 	private Area area;
 	private Disciplina disciplMinistrada;
 	
+	public Professor(String prontuario) {
+		super(prontuario);
+	}
+	
 	public Professor(String nome, String prontuario, String senha, Area area, Disciplina disciplMinistrada) {
 		super(nome, prontuario, senha);
 		this.area = area;

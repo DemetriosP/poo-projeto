@@ -8,7 +8,7 @@ import ifnet.Usuario;
 
 public class UsuarioDAO {
 
-	public void insere(Usuario usuario) {		
+	public static void insere(Usuario usuario) {		
 		
 		Conexao conexao = new Conexao();	
 		

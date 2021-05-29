@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ifnet.Professor;
@@ -17,9 +18,7 @@ public class ProfessorDAO {
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
-			UsuarioDAO user = new UsuarioDAO();
-			
-			user.insere(professor);
+			UsuarioDAO.insereUsuario(professor);
 			
 			statement.setString(1, professor.getProntuario());
 			statement.setString(2, professor.getArea().getNome());
@@ -30,6 +29,32 @@ public class ProfessorDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}	
+	}
+	
+	public static boolean eProfessor(String prontuario) {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		try {
+			
+			String query = "select * from professor where usuario_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, prontuario);
+		
+			resultado = statement.executeQuery();
+			
+			if(resultado != null && resultado.next())return true;
+			else return false;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+		
+	}
 
 }

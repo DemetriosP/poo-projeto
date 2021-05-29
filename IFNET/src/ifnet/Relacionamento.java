@@ -17,12 +17,16 @@ public class Relacionamento {
 	public Map<Integer, ArrayList<Usuario>> getGrauUsuario() {
 		return grauUsuario;
 	}
+	
+	public void setGrauUsuario(int grauRelacionamento, Usuario usuarioRelacioando) {
+		this.grauUsuario.get(grauRelacionamento).add(usuarioRelacioando);
+	}
 
 	public void setGrauUsuario(Map<Integer, ArrayList<Usuario>> grauUsuario) {
 		this.grauUsuario = grauUsuario;
 	}
 	
-	public void criarMapa() {
+	private void criarMapa() {
 		this.grauUsuario.put(0, new ArrayList<Usuario>());
 		this.grauUsuario.put(1, new ArrayList<Usuario>());
 		this.grauUsuario.put(2, new ArrayList<Usuario>());

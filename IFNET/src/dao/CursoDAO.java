@@ -1,8 +1,10 @@
 package dao;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import ifnet.Curso;
@@ -10,7 +12,7 @@ import ifnet.Disciplina;
 
 public class CursoDAO {
 	
-	public void insere(Curso curso) {		
+	public void inserirCurso(Curso curso) {		
 		
 		Conexao conexao = new Conexao();	
 		
@@ -62,6 +64,118 @@ public class CursoDAO {
 			
 	}
 	
-	
+	public ArrayList<Curso> selecionarCursos() {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		ArrayList<Curso> cursos = new ArrayList<Curso>();
+		
+		Curso curso;
+		String cursoID;
+		int semestres;
+		
+		try {
+			
+			String query = "select * from curso";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				cursoID = resultado.getString("curso_id");
+				semestres = resultado.getInt("semestres");
+				
+				curso = new Curso(cursoID, semestres);
+				curso.setDisciplinasPorSemestre(selecionarDisciplinaSemestre(cursoID));
+				
+				cursos.add(curso);
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
+		
+		return cursos;
+	}
+	
+	public static Curso selecionarCurso(String cursoID) {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+	
+		Curso curso = null;
+		int semestres;
+		
+		try {
+			
+			String query = "select semestres from curso where curso_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, cursoID);
+
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				semestres = resultado.getInt("semestres");
+				
+				curso = new Curso(cursoID, semestres);
+				curso.setDisciplinasPorSemestre(selecionarDisciplinaSemestre(cursoID));
+
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
+		
+		return curso;
+	}
+	
+	private static Map<Integer, ArrayList<Disciplina>> selecionarDisciplinaSemestre(String cursoID){
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		Map<Integer, ArrayList<Disciplina>> disciplinasPorSemestre = new HashMap<Integer, ArrayList<Disciplina>>();
+		
+		String disciplina;
+		int semestre;
+		
+		try {
+			
+			String query = "select disciplina_id, semestre from disciplina_semestre where curso_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, cursoID);
+
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				disciplina = resultado.getString("disciplina_id");
+				semestre = resultado.getInt("semestre");
+				
+				if(disciplinasPorSemestre.containsKey(semestre)) {
+					disciplinasPorSemestre.get(semestre).add(new Disciplina(disciplina));
+				}else {
+					disciplinasPorSemestre.put(semestre, new ArrayList<Disciplina>());
+					disciplinasPorSemestre.get(semestre).add(new Disciplina(disciplina));
+				}
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return disciplinasPorSemestre;
+	}
+	
 }

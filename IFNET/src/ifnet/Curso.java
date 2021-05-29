@@ -44,6 +44,10 @@ public class Curso {
 		this.disciplinasPorSemestre.get(semestre).add(disciplina);
 	}
 	
+	public void setDisciplinasPorSemestre(Map<Integer, ArrayList<Disciplina>> mapa) {
+		this.disciplinasPorSemestre = mapa;
+	}
+	
 	public void criarMapa(int semestres) {
 		for(int semestre = 1; semestre <= semestres; semestre++) {
 			this.disciplinasPorSemestre.put(semestre, new ArrayList<Disciplina>());

@@ -5,6 +5,10 @@ public class Aluno extends Usuario{
 	private String email;
 	private Curso curso;
 	
+	public Aluno(String prontuario) {
+		super(prontuario);
+	}
+	
 	public Aluno(String nome, String prontuario, String senha, String email, Curso curso) {
 		super(nome, prontuario, senha);
 		this.email = email;

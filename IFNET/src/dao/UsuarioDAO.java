@@ -8,7 +8,7 @@ import ifnet.Usuario;
 
 public class UsuarioDAO {
 
-	public static void insere(Usuario usuario) {		
+	public static void insereUsuario(Usuario usuario) {		
 		
 		Conexao conexao = new Conexao();	
 		
@@ -27,35 +27,37 @@ public class UsuarioDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}	
-
-	public String consulta() {
+	}
 	
+	public static String[] selecionaUsuario(String usuarioID) {
+		
 		Conexao conexao = new Conexao();
-		
-		PreparedStatement statement;
-		
 		ResultSet resultado = null;
 		
-		String prontuario = null;
+		String[] usuario = new String[2];
 		
 		try {
-		
-			statement = conexao.getConexao().prepareStatement("select * from usuario");
+			
+			String query = "select * from usuario where usuario_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, usuarioID);
+
 			resultado = statement.executeQuery();
 			
-			prontuario = resultado.getString("usuario_id");
+			while(resultado != null && resultado.next()){
+				usuario[0] = resultado.getString("nome");
+				usuario[1] = resultado.getString("senha");
+			}
 			
 			statement.close();
-			
-			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return prontuario;
-	
+		return null;
 	}
 	
 }

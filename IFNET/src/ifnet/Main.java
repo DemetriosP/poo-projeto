@@ -13,6 +13,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		
+		
 		ArrayList<Area> areas = new ArrayList<Area>();
 		ArrayList<Disciplina> disciplinas = new ArrayList<Disciplina>();
 		ArrayList<Curso> cursos = new ArrayList<Curso>();
@@ -116,8 +117,8 @@ public class Main {
 									String curso = leitura.nextLine();
 									
 									cursoCadastro = new Curso(curso);
-					
-									Usuario user = new Aluno(nome, prontuario, senha, email, cursoCadastro);
+									
+									usuarios.add(new Aluno(nome, prontuario, senha, email, cursoCadastro));
 									
 									cadastro = true;
 									
@@ -613,7 +614,7 @@ public class Main {
 										posicao = grupos.indexOf(grup);
 										
 										if(!grupos.get(posicao).getUsuariosGrupo().contains(usuarioAtual)) {
-											grupos.get(posicao).setUsuariosGrupo(usuarioAtual);
+											grupos.get(posicao).setUsuarioGrupo(usuarioAtual);
 											System.out.println("Usuário foi aceito no grupo");
 										}else System.out.println("O usuário já faz parte do grupo");
 											
@@ -675,7 +676,7 @@ public class Main {
 												
 											}while(!prosseguir);
 												
-											grupos.add(new Grupo(nome, disciplinas.get(posicao), usuarioAtual, tipo));
+											grupos.add(new Grupo(nome, disciplinas.get(posicao), (Professor) usuarioAtual, tipo));
 											
 											System.out.println("Grupo criado!");
 											

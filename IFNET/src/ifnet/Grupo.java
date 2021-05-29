@@ -46,6 +46,14 @@ public class Grupo {
 		this.usuariosGrupo = usuario;
 	}
 	
+	public Usuario getUsuarioGrupo(Usuario usuario) {
+		return usuariosGrupo.get(usuariosGrupo.indexOf(usuario));
+	}
+
+	public void setUsuarioGrupo(Usuario usuario) {
+		this.usuariosGrupo.add(usuario);
+	}
+	
 	public Usuario getCriador() {
 		return criador;
 	}

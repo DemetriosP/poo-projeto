@@ -1,13 +1,15 @@
 package dao;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import ifnet.Area;
 
 public class AreaDAO {
 	
-	public void insere(Area area) {		
+	public void inserirArea(Area area) {		
 			
 		Conexao conexao = new Conexao();	
 		
@@ -24,6 +26,39 @@ public class AreaDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}	
+	}
+	
+	public ArrayList<Area> selecionarArea() {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		ArrayList<Area> areas = new ArrayList<Area>();
+		
+		String area;
+		
+		try {
+			
+			String query = "select * from area_atuacao";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				area = resultado.getString("area_id");
+				
+				areas.add(new Area(area));
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return areas;
+		
+	}
+	
 }

@@ -5,9 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import ifnet.Aluno;
 import ifnet.Conteudo;
-import ifnet.Professor;
 
 public class ConteudoDAO {
 	
@@ -53,8 +51,11 @@ public class ConteudoDAO {
 				tipo = resultado.getString("tipo");
 				usuario = resultado.getString("usuario_id");
 				
-				if(AlunoDAO.eAluno(usuario)) conteudos.add( new Conteudo(titulo, tipo, new Aluno(usuario)));
-				else if(ProfessorDAO.eProfessor(usuario)) conteudos.add( new Conteudo(titulo, tipo, new Professor(usuario)));
+				if(AlunoDAO.eAluno(usuario)) {
+					conteudos.add( new Conteudo(titulo, tipo, AlunoDAO.selecionarAluno(usuario)));
+				} else if(ProfessorDAO.eProfessor(usuario)) {
+					conteudos.add( new Conteudo(titulo, tipo, ProfessorDAO.selecionarProfessor(usuario)));
+				}
 				
 			}
 			

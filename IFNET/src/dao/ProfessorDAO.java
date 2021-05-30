@@ -3,8 +3,12 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import ifnet.Area;
+import ifnet.Disciplina;
 import ifnet.Professor;
+import ifnet.Usuario;
 
 public class ProfessorDAO {
 	
@@ -54,6 +58,83 @@ public class ProfessorDAO {
 		}
 		
 		return false;
+		
+	}
+	
+	public ArrayList<Usuario> selecionarProfessores(){
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		ArrayList<Usuario> professor = new ArrayList<Usuario>();
+		
+		String usuarioID, areaID, disciplinaID;
+		String[] usuario;
+		
+		try {
+			
+			String query = "select * from professor";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				usuarioID = resultado.getString("usuario_id");
+				areaID = resultado.getString("area_id");
+				disciplinaID = resultado.getString("disciplina_id");
+				
+				usuario = UsuarioDAO.selecionaUsuario(usuarioID);
+				
+				professor.add(new Professor(usuario[0], usuarioID ,usuario[1], new Area(areaID), new Disciplina(disciplinaID)));
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return professor;
+		
+	}
+	
+	public static Professor selecionarProfessor(String usuarioID){
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		Professor professor = null;
+		
+		String areaID, disciplinaID;
+		String[] usuario;
+		
+		try {
+			
+			String query = "select area_id, disciplina_id from professor where usuario_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, usuarioID);
+
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				areaID = resultado.getString("area_id");
+				disciplinaID = resultado.getString("disciplina_id");
+				
+				usuario = UsuarioDAO.selecionaUsuario(usuarioID);
+				
+				professor = new Professor(usuario[0], usuarioID ,usuario[1], new Area(areaID), new Disciplina(disciplinaID));
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return professor;
 		
 	}
 

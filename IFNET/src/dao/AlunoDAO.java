@@ -84,7 +84,7 @@ public class AlunoDAO {
 				
 				usuario = UsuarioDAO.selecionaUsuario(usuarioID);
 				
-				alunos.add(new Aluno(usuario[0], usuario[1], email, query, CursoDAO.selecionarCurso(cursoID)));
+				alunos.add(new Aluno(usuario[0], usuarioID, email,  usuario[1], CursoDAO.selecionarCurso(cursoID)));
 			}
 			
 			statement.close();
@@ -95,6 +95,44 @@ public class AlunoDAO {
 		
 		return alunos;
 		
+	}
+	
+	public static Aluno selecionarAluno(String usuarioID){
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		Aluno aluno = null;
+		
+		String email, cursoID;
+		String[] usuario;
+		
+		try {
+			
+			String query = "select email, curso_id from aluno where usuario_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, usuarioID);
+
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				email = resultado.getString("email");
+				cursoID = resultado.getString("curso_id");
+				
+				usuario = UsuarioDAO.selecionaUsuario(usuarioID);
+				
+				aluno = new Aluno(usuario[0], usuarioID, email,  usuario[1], CursoDAO.selecionarCurso(cursoID));
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return aluno;
 	}
 
 }

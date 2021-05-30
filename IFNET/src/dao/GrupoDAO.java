@@ -6,10 +6,8 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 
-import ifnet.Aluno;
 import ifnet.Disciplina;
 import ifnet.Grupo;
-import ifnet.Professor;
 import ifnet.Usuario;
 
 public class GrupoDAO {
@@ -119,7 +117,7 @@ public class GrupoDAO {
 				usuario = resultado.getString("usuario_id");
 				tipo = resultado.getString("tipo");
 				
-				grupo = new Grupo(nome, new Disciplina(disciplina), new Professor(usuario), tipo);
+				grupo = new Grupo(nome, new Disciplina(disciplina), ProfessorDAO.selecionarProfessor(usuario), tipo);
 				grupos.get(grupos.indexOf(grupo)).setUsuariosGrupo(selecionaUsuariosGrupo(grupo));
 			}
 			
@@ -156,10 +154,10 @@ public class GrupoDAO {
 			while(resultado != null && resultado.next()){
 				usuario = resultado.getString("usuario_id");
 				
-				if( AlunoDAO.eAluno(usuario)) {
-					usuarios.add(new Aluno(usuario));
+				if(AlunoDAO.eAluno(usuario)) {
+					usuarios.add(AlunoDAO.selecionarAluno(usuario));
 				} else if(ProfessorDAO.eProfessor(usuario)){
-					usuarios.add(new Professor(usuario));
+					usuarios.add(ProfessorDAO.selecionarProfessor(usuario));
 				}
 			}
 			

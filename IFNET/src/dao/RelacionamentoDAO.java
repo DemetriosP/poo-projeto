@@ -6,18 +6,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import ifnet.Relacionamento;
-import ifnet.Usuario;
+import model.RelacionamentoModel;
+import model.UsuarioModel;
 
 public class RelacionamentoDAO {
 	
-	public void inserirRelacionamento(Usuario usuario) {		
+	public static void inserirRelacionamento(UsuarioModel usuario) {		
 		
 		Conexao conexao = new Conexao();
 		
-		for (Map.Entry<Integer , ArrayList<Usuario>> mapa : usuario.getRelacionamento().getGrauUsuario().entrySet()) {
+		for (Map.Entry<Integer , ArrayList<UsuarioModel>> mapa : usuario.getRelacionamento().getGrauUsuario().entrySet()) {
 		
-			for(Usuario usuarios:mapa.getValue()) {
+			for(UsuarioModel usuarios:mapa.getValue()) {
 				
 				try {
 					
@@ -42,15 +42,15 @@ public class RelacionamentoDAO {
 		
 	}
 	
-	public Relacionamento selecionarRelacionamento(Usuario usuario){
+	public static RelacionamentoModel selecionarRelacionamento(UsuarioModel usuario){
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
-		Relacionamento relacionamento = new Relacionamento();
+		RelacionamentoModel relacionamento = new RelacionamentoModel();
 		int grauRelacionamento;
 		String usuarioRelacionado;
-		Usuario usuarioRel = null;
+		UsuarioModel usuarioRel = null;
 		
 		try {
 			

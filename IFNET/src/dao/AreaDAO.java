@@ -5,11 +5,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import ifnet.Area;
+import model.AreaModel;
 
 public class AreaDAO {
 	
-	public void inserirArea(Area area) {		
+	public static void inserirArea(AreaModel area) {		
 			
 		Conexao conexao = new Conexao();	
 		
@@ -28,12 +28,12 @@ public class AreaDAO {
 		}
 	}
 	
-	public ArrayList<Area> selecionarArea() {
+	public static ArrayList<AreaModel> selecionarAreas() {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
-		ArrayList<Area> areas = new ArrayList<Area>();
+		ArrayList<AreaModel> areas = new ArrayList<AreaModel>();
 		
 		String area;
 		
@@ -48,7 +48,7 @@ public class AreaDAO {
 			while(resultado != null && resultado.next()){
 				area = resultado.getString("area_id");
 				
-				areas.add(new Area(area));
+				areas.add(new AreaModel(area));
 			}
 			
 			statement.close();

@@ -1,15 +1,15 @@
-package ifnet;
+package model;
 
-public class Aluno extends Usuario{
+public class AlunoModel extends UsuarioModel{
 	
 	private String email;
-	private Curso curso;
+	private CursoModel curso;
 	
-	public Aluno(String prontuario) {
+	public AlunoModel(String prontuario) {
 		super(prontuario);
 	}
 	
-	public Aluno(String nome, String prontuario, String senha, String email, Curso curso) {
+	public AlunoModel(String nome, String prontuario, String senha, String email, CursoModel curso) {
 		super(nome, prontuario, senha);
 		this.email = email;
 		this.curso = curso;
@@ -23,11 +23,11 @@ public class Aluno extends Usuario{
 		this.email = email;
 	}
 	
-	public Curso getCurso() {
+	public CursoModel getCurso() {
 		return curso;
 	}
 	
-	public void setCurso(Curso curso) {
+	public void setCurso(CursoModel curso) {
 		this.curso = curso;
 	}
 

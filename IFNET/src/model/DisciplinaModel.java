@@ -1,12 +1,12 @@
-package ifnet;
+package model;
 
 import java.util.ArrayList;
 
-public class Disciplina {
+public class DisciplinaModel {
 	
 	private String nome;
 	
-	public Disciplina(String nome) {
+	public DisciplinaModel(String nome) {
 		this.nome = nome;
 	}
 
@@ -18,11 +18,11 @@ public class Disciplina {
 		this.nome = nome;
 	}
 
-	public static ArrayList<Disciplina> pesquisarDisciplinas(ArrayList<Disciplina> disciplinas, String nome) {
+	public static ArrayList<DisciplinaModel> pesquisarDisciplinas(ArrayList<DisciplinaModel> disciplinas, String nome) {
 	
-		ArrayList<Disciplina> disciplinaPesquisada = new ArrayList<Disciplina>();
+		ArrayList<DisciplinaModel> disciplinaPesquisada = new ArrayList<DisciplinaModel>();
 		
-		for(Disciplina disciplina:disciplinas) 
+		for(DisciplinaModel disciplina:disciplinas) 
 			if(disciplina.getNome().toLowerCase().contains(nome.toLowerCase())) 
 				disciplinaPesquisada.add(disciplina);
 		

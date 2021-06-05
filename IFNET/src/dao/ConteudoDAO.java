@@ -5,17 +5,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import ifnet.Conteudo;
+import model.ConteudoModel;
 
 public class ConteudoDAO {
 	
-	public void insereConteudo(Conteudo conteudo) {		
+	public static void insereConteudo(ConteudoModel conteudo) {		
 		
 		Conexao conexao = new Conexao();	
 		
 		try {
 			
-			String query = "insert into conteudo (titulo, tipo, usuario_id) values (?,?,?,?)";
+			String query = "insert into conteudo (titulo, tipo, usuario_id) values (?,?,?)";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
@@ -30,16 +30,17 @@ public class ConteudoDAO {
 		}
 	}
 	
-	public ArrayList<Conteudo> selecionaConteudos() {
+	public static ArrayList<ConteudoModel> selecionaConteudos() {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
-		ArrayList<Conteudo> conteudos = new ArrayList<Conteudo>();
-		String titulo, tipo, usuario;
+		ArrayList<ConteudoModel> conteudos = new ArrayList<ConteudoModel>();
+		String titulo, tipo, usuarioID;
+		int codigo;
 		
 		try {
 			
-			String query = "select titulo, tipo, usuario_id from conteudo";
+			String query = "select * from conteudo";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 		
@@ -47,14 +48,15 @@ public class ConteudoDAO {
 			
 			while(resultado != null && resultado.next()){
 				
+				codigo = resultado.getInt("conteudo_id");
 				titulo = resultado.getString("titulo");
 				tipo = resultado.getString("tipo");
-				usuario = resultado.getString("usuario_id");
+				usuarioID = resultado.getString("usuario_id");
 				
-				if(AlunoDAO.eAluno(usuario)) {
-					conteudos.add( new Conteudo(titulo, tipo, AlunoDAO.selecionarAluno(usuario)));
-				} else if(ProfessorDAO.eProfessor(usuario)) {
-					conteudos.add( new Conteudo(titulo, tipo, ProfessorDAO.selecionarProfessor(usuario)));
+				if(AlunoDAO.eAluno(usuarioID)) {
+					conteudos.add( new ConteudoModel(titulo, tipo, AlunoDAO.selecionarAluno(usuarioID), codigo));
+				} else if(ProfessorDAO.eProfessor(usuarioID)) {
+					conteudos.add( new ConteudoModel(titulo, tipo, ProfessorDAO.selecionarProfessor(usuarioID), codigo));
 				}
 				
 			}
@@ -67,5 +69,98 @@ public class ConteudoDAO {
 		
 		return conteudos;
 	}
-
+	
+	public static String selecionarConteudo(int codigo) {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		String usuarioID = null;
+		
+		try {
+			
+			String query = "select usuario_id from conteudo where conteudo_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setInt(0, codigo);
+		
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				usuarioID = resultado.getString("usuario_id");
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return usuarioID;
+	}
+	
+	
+	public static ArrayList<ConteudoModel> pesquisarConteudos(String palavra) {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		ArrayList<ConteudoModel> conteudos = new ArrayList<ConteudoModel>();
+		String titulo, tipo, usuarioID;
+		int codigo;
+		
+		try {
+			
+			String query = "select * from conteudo where titulo like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, "%palavra%");
+		
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				
+				codigo = resultado.getInt("conteudo_id");
+				titulo = resultado.getString("titulo");
+				tipo = resultado.getString("tipo");
+				usuarioID = resultado.getString("usuario_id");
+				
+				if(AlunoDAO.eAluno(usuarioID)) {
+					conteudos.add( new ConteudoModel(titulo, tipo, AlunoDAO.selecionarAluno(usuarioID), codigo));
+				} else if(ProfessorDAO.eProfessor(usuarioID)) {
+					conteudos.add( new ConteudoModel(titulo, tipo, ProfessorDAO.selecionarProfessor(usuarioID), codigo));
+				}
+				
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return conteudos;
+	}
+	
+	public static void excluirConteudo(int codigo) {
+		
+		Conexao conexao = new Conexao();	
+		
+		try {
+			
+			String query = "delete from where codigo like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setInt(1, codigo);
+			
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 }

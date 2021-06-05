@@ -6,13 +6,13 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 
-import ifnet.Disciplina;
-import ifnet.Grupo;
-import ifnet.Usuario;
+import model.DisciplinaModel;
+import model.GrupoModel;
+import model.UsuarioModel;
 
 public class GrupoDAO {
 	
-	public void inserirGrupo(Grupo grupo) {		
+	public static void inserirGrupo(GrupoModel grupo) {		
 		
 		Conexao conexao = new Conexao();	
 		
@@ -36,7 +36,7 @@ public class GrupoDAO {
 		inserirUsuariosGrupo(grupo, grupo.getCriador());
 	}
 	
-	public void inserirUsuariosGrupo(Grupo grupo, Usuario usuario) {
+	public static void inserirUsuariosGrupo(GrupoModel grupo, UsuarioModel usuario) {
 		
 		Conexao conexao = new Conexao();
 		
@@ -60,7 +60,7 @@ public class GrupoDAO {
 		}
 	}
 
-	private int selecionaGrupoID(Grupo grupo) {
+	private static int selecionaGrupoID(GrupoModel grupo) {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
@@ -94,13 +94,13 @@ public class GrupoDAO {
 		return grupoID;
 	}
 	
-	public ArrayList<Grupo> selecionaGrupo() {
+	public static ArrayList<GrupoModel> selecionaGrupo() {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
-		ArrayList<Grupo> grupos = new ArrayList<Grupo>();
-		Grupo grupo = null;
+		ArrayList<GrupoModel> grupos = new ArrayList<GrupoModel>();
+		GrupoModel grupo = null;
 		String nome, disciplina, usuario, tipo;
 		
 		try {
@@ -117,7 +117,7 @@ public class GrupoDAO {
 				usuario = resultado.getString("usuario_id");
 				tipo = resultado.getString("tipo");
 				
-				grupo = new Grupo(nome, new Disciplina(disciplina), ProfessorDAO.selecionarProfessor(usuario), tipo);
+				grupo = new GrupoModel(nome, new DisciplinaModel(disciplina), ProfessorDAO.selecionarProfessor(usuario), tipo);
 				grupos.get(grupos.indexOf(grupo)).setUsuariosGrupo(selecionaUsuariosGrupo(grupo));
 			}
 			
@@ -130,16 +130,16 @@ public class GrupoDAO {
 		return grupos;
 	}
 	
-	private ArrayList<Usuario> selecionaUsuariosGrupo(Grupo grupo) {
+	private static ArrayList<UsuarioModel> selecionaUsuariosGrupo(GrupoModel grupo) {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
 		int grupoID = selecionaGrupoID(grupo);
 		
-		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
+		ArrayList<UsuarioModel> usuarios = new ArrayList<UsuarioModel>();
 		
-		String usuario = null;
+		String usuarioID = null;
 		
 		try {
 			
@@ -152,12 +152,12 @@ public class GrupoDAO {
 			resultado = statement.executeQuery();
 			
 			while(resultado != null && resultado.next()){
-				usuario = resultado.getString("usuario_id");
+				usuarioID = resultado.getString("usuario_id");
 				
-				if(AlunoDAO.eAluno(usuario)) {
-					usuarios.add(AlunoDAO.selecionarAluno(usuario));
-				} else if(ProfessorDAO.eProfessor(usuario)){
-					usuarios.add(ProfessorDAO.selecionarProfessor(usuario));
+				if(AlunoDAO.eAluno(usuarioID)) {
+					usuarios.add(AlunoDAO.selecionarAluno(usuarioID));
+				} else if(ProfessorDAO.eProfessor(usuarioID)){
+					usuarios.add(ProfessorDAO.selecionarProfessor(usuarioID));
 				}
 			}
 			

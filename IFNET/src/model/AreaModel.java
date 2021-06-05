@@ -1,10 +1,10 @@
-package ifnet;
+package model;
 
-public class Area {
+public class AreaModel {
 	
 	private String nome;
 	
-	public Area(String nome) {
+	public AreaModel(String nome) {
 		this.nome = nome;
 	}
 

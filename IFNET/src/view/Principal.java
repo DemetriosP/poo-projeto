@@ -1,53 +1,66 @@
-package ifnet;
+package view;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import dao.AlunoDAO;
+import dao.ConteudoDAO;
+import dao.ProfessorDAO;
 import excecoes.GrauConfiabilidadeAtualException;
 import excecoes.OpcaoInexistenteException;
 import excecoes.UsuarioCadastradoException;
+import model.AlunoModel;
+import model.AreaModel;
+import model.ConteudoModel;
+import model.CursoModel;
+import model.DisciplinaModel;
+import model.GrupoModel;
+import model.ProfessorModel;
+import model.RelacionamentoModel;
+import model.UsuarioModel;
 
-public class Main {
+public class Principal {
 
 	public static void main(String[] args) {
 		
-		
-		ArrayList<Area> areas = new ArrayList<Area>();
-		ArrayList<Disciplina> disciplinas = new ArrayList<Disciplina>();
-		ArrayList<Curso> cursos = new ArrayList<Curso>();
-		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
-		ArrayList<Conteudo> conteudos = new ArrayList<Conteudo>();
-		ArrayList<Grupo> grupos = new ArrayList<Grupo>();
-		ArrayList<Grupo> grupoAlt = new ArrayList<Grupo>();
-		ArrayList<Conteudo> conteudoAlt = new ArrayList<Conteudo>();
-		ArrayList<Disciplina> disciplinaAlt = new ArrayList<Disciplina>();
-		ArrayList<Usuario> usuariosAlt = new ArrayList<Usuario>();
-		ArrayList<Usuario> usuariosMapa = new ArrayList<Usuario>();
-		ArrayList<Curso> cursoAlt = new ArrayList<Curso>();
+		ArrayList<AreaModel> areas = new ArrayList<AreaModel>();
+		ArrayList<DisciplinaModel> disciplinas = new ArrayList<DisciplinaModel>();
+		ArrayList<CursoModel> cursos = new ArrayList<CursoModel>();
+		ArrayList<UsuarioModel> usuarios = new ArrayList<UsuarioModel>();
+		ArrayList<ConteudoModel> conteudos = new ArrayList<ConteudoModel>();
+		ArrayList<GrupoModel> grupos = new ArrayList<GrupoModel>();
+		ArrayList<GrupoModel> grupoAlt = new ArrayList<GrupoModel>();
+		ArrayList<ConteudoModel> conteudoAlt = new ArrayList<ConteudoModel>();
+		ArrayList<DisciplinaModel> disciplinaAlt = new ArrayList<DisciplinaModel>();
+		ArrayList<UsuarioModel> usuariosAlt = new ArrayList<UsuarioModel>();
+		ArrayList<UsuarioModel> usuariosMapa = new ArrayList<UsuarioModel>();
+		ArrayList<CursoModel> cursoAlt = new ArrayList<CursoModel>();
 		Map<Integer,Integer> maisRelacionados = new HashMap<Integer, Integer>();
 		Map<Integer,Integer> maisUsuarios = new HashMap<Integer, Integer>();
 		
 		Scanner leitura = new Scanner(System.in);
 		
-		Usuario usu = null;
-		Curso cur = null;
-		Disciplina disc = null;
-		Grupo grup = null;
-		Conteudo cont = null;
-		Disciplina disciplinaCadastro;
-		Curso cursoCadastro;
-		Area areaCadastro;
-		Usuario usuarioAtual = null;
+		UsuarioModel usu = null;
+		CursoModel cur = null;
+		DisciplinaModel disc = null;
+		GrupoModel grup = null;
+		ConteudoModel cont = null;
+		DisciplinaModel disciplinaCadastro;
+		CursoModel cursoCadastro;
+		AreaModel areaCadastro;
+		UsuarioModel usuarioAtual = null;
 		boolean comecar = true, sair = true, voltar = true, entrou = false, prosseguir = false, cadastro = false, relacionar = false;
 		String opcao = "", prontuario = "", senha, nome, tipo, titulo, grauConf[] = {"Conhecidos", "Amigos", "Melhores Amigos"};	
 		int posicao = -1, semestre = 0, semestres = 0, grau, grauAtual = -1, novoGrau = -1, volta;
 		
+		UsuarioModel usuario;
+		
 		while(comecar) {
 			
 			do {
-				//pagina principal do sistema
+				
 				System.out.println("Bem vindo ao IFNET");
 				System.out.println("1.Entrar\n2.Criar nova conta\nS.Sair");
 				opcao = leitura.nextLine().toUpperCase();
@@ -58,48 +71,23 @@ public class Main {
 						
 						do {
 							
-							//recebe o prontuário
-							System.out.print("Informe o prontuario: ");
-							prontuario = leitura.nextLine().toUpperCase();
+							usuarioAtual = UsuarioView.login();
 							
-							//recebe a senha
-							System.out.print("Informe a senha: ");
-							senha = leitura.nextLine();
-					
-							usuarioAtual = Usuario.loginUsuario(usuarios, prontuario, senha);
-							if(usuarioAtual  != null) {
-								entrou = true;
-								sair = false;
-							} else {
-								System.out.println("O prontuário e a senha fornecidos não correspondem as "
-										+ "informações em nossos registros. Verifique-as e tente novamente.");
+							if(usuario != null) {
+								
+								if(AlunoDAO.eAluno(usuarioAtual.getProntuario())) {
+									usuarioAtual = AlunoDAO.selecionarAluno(usuarioAtual.getProntuario());
+									entrou = true;
+								}else {
+									usuarioAtual = ProfessorDAO.selecionarProfessor(usuarioAtual.getProntuario());
+									entrou = true;
+								}
 							}
-						}while(usuarioAtual == null);
+							
+						}while(!entrou);
 						
 						break;
 					case "2":
-						
-						System.out.println("Cadastre-se");
-						
-						try {
-							
-							System.out.print("Informe o prontuário: ");
-							prontuario = leitura.nextLine().toUpperCase();
-							
-							if(Usuario.usuarioExistente(usuarios, prontuario)) {
-								throw new UsuarioCadastradoException();
-							}
-							
-						} catch (UsuarioCadastradoException excecao) {
-							System.out.println(excecao.getMessage());
-							break;
-						} 
-						
-						System.out.print("Informe o nome: ");
-						nome = leitura.nextLine();
-							
-						System.out.print("Informe a senha: ");
-						senha = leitura.nextLine();
 						
 						do {
 							
@@ -109,57 +97,28 @@ public class Main {
 							switch(opcao) {
 							
 								case "1":
-									
-									System.out.print("Informe o e-mail: ");
-									String email = leitura.nextLine();
-									
-									System.out.print("Informe o curso: ");
-									String curso = leitura.nextLine();
-									
-									cursoCadastro = new Curso(curso);
-									
-									usuarios.add(new Aluno(nome, prontuario, senha, email, cursoCadastro));
-									
+									usuario = new AlunoView().cadastrar();
+									if(usuario != null) AlunoDAO.inserirAluno((AlunoModel) usuario);
 									cadastro = true;
-									
-									System.out.println("Cadastro realizado com sucesso!");
-									
 									break;
 								case "2":
-									
-									System.out.print("Informe a área: ");
-									String area = leitura.nextLine();
-									
-									System.out.print("Informe a disciplina: ");
-									String disciplina = leitura.nextLine();
-									
-									disciplinaCadastro = new Disciplina(disciplina);
-									areaCadastro = new Area(area);
-									
-									disciplinas.add(disciplinaCadastro);
-									areas.add(areaCadastro);
-									
-									usuarios.add(new Professor(nome, prontuario, senha,
-											new Area(area), new Disciplina(disciplina)));
-									
+									usuario = new ProfessorView().cadastrar();
+									if(usuario != null) ProfessorDAO.inserirProfessor((ProfessorModel) usuario);
 									cadastro = true;
-									
-									System.out.println("Cadastro realizado com sucesso!");
-									
 									break;
 								default:
 									System.out.println("Opção inválida");
 							}
-							
-						} while(!cadastro);
-			
+					
+						}while(!cadastro);
+								
 						break;
 					case "S":
 						comecar = sair = false;
 						break;
 					default:
 						System.out.println("Opção inválida");
-				}
+				
 			}while(sair);
 			
 			sair = true;
@@ -172,7 +131,7 @@ public class Main {
 					
 					System.out.println(usuarioAtual.getNome());
 					System.out.println("1.Conteudo\n2.Usuários\n3.Grupo\n4.Conta");
-					if(usuarioAtual.getClass() == Aluno.class) System.out.println("5.Disciplina\n6.Curso");
+					if(usuarioAtual.getClass() == AlunoModel.class) System.out.println("5.Disciplina\n6.Curso");
 					System.out.println("S.Sair");
 					opcao = leitura.nextLine().toUpperCase();
 				
@@ -182,49 +141,8 @@ public class Main {
 							
 							do {
 								
-								if(conteudos.size() > 0) {
-									
-									do {
-										
-										if(conteudoAlt.size() == 0) {
-											conteudoAlt = new ArrayList<Conteudo>(conteudos);
-											System.out.println("Contéudos");
-										}else System.out.println("Resultado da busca");
-										
-										for(Conteudo conteudo:conteudoAlt) {
-											System.out.println(conteudoAlt.indexOf(conteudo) +". " + conteudo.getTitulo());
-										}
-										
-										System.out.println("Informe o número do conteúdo desejado: ");
-										
-										try {
-											
-											posicao = Integer.parseInt(leitura.nextLine());
-											
-											if(posicao >= conteudoAlt.size() || posicao < 0) {
-												throw new OpcaoInexistenteException();
-											}
-											
-											prosseguir = true;
-											cont = conteudoAlt.get(posicao);
-											
-										} catch (NumberFormatException excecao) {
-											System.out.println("O valor informado não é um número inteiro");
-										} catch (OpcaoInexistenteException excecao) {
-											System.out.println(excecao.getMessage());
-											conteudoAlt.clear();
-										}
-										
-									}while(!prosseguir);
-									
-									System.out.println(conteudoAlt.get(posicao));
-								}
-								
 								System.out.println("1.Pesquisar Conteúdo\n2.Publicar Conteúdo\n3.Excluir Conteúdo\nV.Voltar");
 								opcao = leitura.nextLine().toUpperCase();
-								
-								conteudoAlt.clear();
-								prosseguir = false;
 								
 								switch(opcao) {
 								
@@ -233,52 +151,31 @@ public class Main {
 										System.out.println("Informe o título do conteúdo: ");
 										titulo = leitura.nextLine();
 										
-										conteudoAlt = Conteudo.pesquisarConteudos(conteudos, titulo);
+										conteudos = ConteudoDAO.pesquisarConteudos(titulo);
 										
-										if(conteudoAlt.size() == 0) System.out.println("Não foi encontrado nenhum conteudo com o título informado");
+										if(conteudos.size() > 0) {
+											ConteudoView.exibirConteudo(conteudos);
+										}else {
+											System.out.println("Não foi encontrado nenhum conteudo com o título informado");
+										}
 										
 										break;
 									case "2":
 										
-										System.out.println("Informe o titulo do conteúdo");
-										titulo = leitura.nextLine();
-
-										System.out.println("Informe o tipo de conteúdo que deseja adicionar");
-										tipo = leitura.nextLine();	
-									
-										conteudos.add(new Conteudo(titulo, tipo, usuarioAtual));
+										ConteudoDAO.insereConteudo(ConteudoView.cadastrarConteudo(usuarioAtual));
 										
-										System.out.println("Conteúdo publicado");
 										break;
 									case "3":
 										
+										conteudos = ConteudoDAO.selecionaConteudos();
+										
 										if(conteudos.size() > 0) {
-											
-											if(cont.getPublicador().equals(usuarioAtual)) {
-												
-												do {
-													
-													System.out.println("Você tem certeza que deseja excluir o conteúdo? "
-															+ "Essa ação não pode ser desfeita\n1.Sim\n2.Não");
-													opcao = leitura.nextLine();
-													
-													switch(opcao) {
-													
-														case "1":
-															conteudos.remove(cont);
-															System.out.println("Conteúdo excluído");
-															break;
-														case "2":
-															System.out.println("Conteúdo não excluído");
-															break;
-														default:
-															System.out.println("Opção invàlida");
-													}
-												}while(!opcao.equals("1") && !opcao.equals("2"));
-												
-											} else System.out.println("Ação negada, somente o publicador do contéudo tem permissão para excluí-lo");
-							
-										}else System.out.println("Ação negada, não existem conteúdos cadastrados.");
+											ConteudoView.exibirConteudo(conteudos);
+										}else {
+											System.out.println("Não há nenhum contéudo publicado");
+										}
+										
+										ConteudoView.excluirConteudo(conteudos, usuarioAtual);
 							
 										break;
 									case "V":
@@ -291,86 +188,33 @@ public class Main {
 						
 							break;
 						case "2":
+							
 							do {
 								
-								if(usuarios.size() > 1) {
-									
-									do {
-										
-										if(usuariosAlt.size() == 0) {
-											usuariosAlt = new ArrayList<Usuario>(usuarios);
-											System.out.println("Usuarios");
-										}else System.out.println("Resultado da busca");
-										
-										for(Usuario usuario:usuariosAlt) {
-											if(usuarios.indexOf(usuario) != usuarios.indexOf(usuarioAtual)){
-												System.out.println(usuariosAlt.indexOf(usuario) +". " + usuario.getNome());
-											}
-										}
-										
-										System.out.println("Informe o número do usuário desejado: ");
-										
-										try {
-											
-											posicao = Integer.parseInt(leitura.nextLine());
-											
-											if(posicao >= usuariosAlt.size() || posicao < 0 || posicao == usuariosAlt.indexOf(usuarioAtual)) {
-												throw new OpcaoInexistenteException();
-											}
-											
-											usu = usuariosAlt.get(posicao);
-											prosseguir = true;
-											
-										} catch (NumberFormatException excecao) {
-											System.out.println("O valor informado não é um número inteiro");
-										} catch (OpcaoInexistenteException excecao) {
-											System.out.println(excecao.getMessage());
-											usuariosAlt.clear();
-										}
-										
-									}while(!prosseguir);
-									
-									System.out.println(usuariosAlt.get(posicao));
-								}
-								
-								System.out.println("1.Pesquisar Usuários\n2.Relacionar Usuários\n3.Alterar grau de confiabilidade\n4.Excluir Relacionamento"
-										+ "\n5.Consultar usuário com mais relacionamentos\nV.Voltar");
+								System.out.println("1.Relacionar Usuários\n2.Alterar grau de confiabilidade\n3.Excluir Relacionamento"
+										+ "\n4.Consultar usuário com mais relacionamentos\nV.Voltar");
 								opcao = leitura.nextLine().toUpperCase();
 								
-								usuariosAlt.clear();
-								prosseguir = false;
-								
 								switch(opcao) {
+									
 									case "1":
 										
-										System.out.println("Pesquisar Usuário");
-										
-										System.out.println("Informe o nome do Usuário: ");
-										nome = leitura.nextLine();
-										
-										usuariosAlt = Usuario.pesquisarUsuario(usuarios, nome);
-										
-										if(usuariosAlt.size() == 0) System.out.println("Não foi encontrado nenhum usuário com o nome informado");
-										
-										break;
-									case "2":
-										
-										relacionar = Relacionamento.relacionarUsuario(usuarioAtual, usuarios.get(usuarios.indexOf(usu)));
+										relacionar = RelacionamentoModel.relacionarUsuario(usuarioAtual, usuarios.get(usuarios.indexOf(usu)));
 										
 										if(relacionar) System.out.println("O relacionamento foi criado");
 										else System.out.println("O usuário atual e o usuário informado já estão relacionados");
 										
 										break;
-									case "3":
+									case "2":
 
-										if(Relacionamento.estaRelacionado(usuarioAtual, usu)) {
+										if(RelacionamentoModel.estaRelacionado(usuarioAtual, usu)) {
 											
-											for (Map.Entry<Integer , ArrayList<Usuario>> mapa : usuarioAtual.getRelacionamento().getGrauUsuario().entrySet()) { 
+											for (Map.Entry<Integer , ArrayList<UsuarioModel>> mapa : usuarioAtual.getRelacionamento().getGrauUsuario().entrySet()) { 
 												
 												usuariosMapa = mapa.getValue();
 												grau = mapa.getKey();
 												
-												for(Usuario usuario:usuariosMapa) {
+												for(UsuarioModel usuario:usuariosMapa) {
 													if(usuario.getProntuario().equals(usu.getProntuario())) {
 														grauAtual = grau;
 														posicao = usuariosMapa.indexOf(usuario);
@@ -412,23 +256,23 @@ public class Main {
 
 											prosseguir = false;
 											
-											Relacionamento.alterarGrauConfiabilidade(usuarioAtual, grauAtual, novoGrau, posicao);
+											RelacionamentoModel.alterarGrauConfiabilidade(usuarioAtual, grauAtual, novoGrau, posicao);
 											
 											System.out.println("Grau de Confiabilidade Alterado");
 											
 										}else System.out.println("Esses usuários não estão relacionados");
 										
 										break;
-									case "4":
+									case "3":
 										
-										if(Relacionamento.estaRelacionado(usuarioAtual, usu)) {
+										if(RelacionamentoModel.estaRelacionado(usuarioAtual, usu)) {
 
-											for (Map.Entry<Integer , ArrayList<Usuario>> mapa : usuarioAtual.getRelacionamento().getGrauUsuario().entrySet()) { 
+											for (Map.Entry<Integer , ArrayList<UsuarioModel>> mapa : usuarioAtual.getRelacionamento().getGrauUsuario().entrySet()) { 
 																					
 												usuariosMapa = mapa.getValue();
 												grau = mapa.getKey();
 												
-												for(Usuario usuario:usuariosMapa) {
+												for(UsuarioModel usuario:usuariosMapa) {
 													if(usuario.getProntuario().equals(usu.getProntuario())) {
 														grauAtual = grau;
 														posicao = usuariosMapa.indexOf(usuario);
@@ -460,9 +304,9 @@ public class Main {
 										}else System.out.println("Você e o usuário selecionado não possuem relação");
 
 										break;
-									case "5":
+									case "4":
 										
-										maisRelacionados = Relacionamento.consultarUsuariosMaisRelacionado(usuarios);
+										maisRelacionados = RelacionamentoModel.consultarUsuariosMaisRelacionado(usuarios);
 										
 										System.out.println("TOP 10 Usuários mais relacionados");
 										
@@ -494,11 +338,11 @@ public class Main {
 									do {
 										
 										if(grupoAlt.size() == 0) {
-											grupoAlt = new ArrayList<Grupo>(grupos);
+											grupoAlt = new ArrayList<GrupoModel>(grupos);
 											System.out.println("Grupos");
 										}else System.out.println("Resultado da busca");
 										
-										for(Grupo grupo:grupoAlt) {
+										for(GrupoModel grupo:grupoAlt) {
 											System.out.println(grupoAlt.indexOf(grupo) +". " + grupo.getNome());
 										}
 										
@@ -530,7 +374,7 @@ public class Main {
 								
 								System.out.println("1.Pesquisar Grupo\n2.Consultar Grupo de Pesquisa por Disciplina\n"
 										+ "3.Consultar Grupos com Mais Usuarios\n4.Entrar no Grupo");
-								if(usuarioAtual.getClass() == Professor.class) 
+								if(usuarioAtual.getClass() == ProfessorModel.class) 
 									System.out.println("5.Criar Grupo\n6.Excluir Grupo");
 								System.out.println("V.Volta");
 								opcao = leitura.nextLine().toUpperCase();
@@ -547,7 +391,7 @@ public class Main {
 										System.out.println("Informe o nome do grupo: ");
 										nome = leitura.nextLine();
 										
-										grupoAlt = Grupo.pesquisarGrupos(grupos, nome);
+										grupoAlt = GrupoModel.pesquisarGrupos(grupos, nome);
 										
 										if(grupoAlt.size() == 0) System.out.println("Não foi encontrado nenhum grupo com o nome informado");
 										
@@ -560,7 +404,7 @@ public class Main {
 											
 											System.out.println("Disciplinas");
 											
-											for(Disciplina disciplina:disciplinas) {
+											for(DisciplinaModel disciplina:disciplinas) {
 												posicao = disciplinas.indexOf(disciplina);
 												System.out.println(posicao + ". " + disciplina.getNome());
 											}
@@ -586,7 +430,7 @@ public class Main {
 										
 										}while(!prosseguir);
 										
-										grupoAlt = Grupo.consultarGpPesquisaPorDisciplina(grupos, disciplinas.get(posicao));
+										grupoAlt = GrupoModel.consultarGpPesquisaPorDisciplina(grupos, disciplinas.get(posicao));
 										
 										if(grupoAlt.size() == 0) System.out.println("Não foi encontrado nenhum grupo de pesquisa com a disciplina informada");
 									
@@ -596,7 +440,7 @@ public class Main {
 										
 									case "3":
 										
-										maisUsuarios = Grupo.consultarGrupoMaisUsuarios(grupos);
+										maisUsuarios = GrupoModel.consultarGrupoMaisUsuarios(grupos);
 										
 										System.out.println("TOP 10 Grupos com mais usuários");
 										
@@ -620,7 +464,7 @@ public class Main {
 											
 								}
 								
-								if(usuarioAtual.getClass() == Professor.class) {
+								if(usuarioAtual.getClass() == ProfessorModel.class) {
 									switch(opcao) {
 										case "5":
 											
@@ -651,7 +495,7 @@ public class Main {
 												
 												System.out.println("Disciplina");
 												
-												for(Disciplina disciplina:disciplinas) {
+												for(DisciplinaModel disciplina:disciplinas) {
 													posicao = disciplinas.indexOf(disciplina);
 													System.out.println(posicao + ". " + disciplina.getNome());
 												}
@@ -676,7 +520,7 @@ public class Main {
 												
 											}while(!prosseguir);
 												
-											grupos.add(new Grupo(nome, disciplinas.get(posicao), (Professor) usuarioAtual, tipo));
+											grupos.add(new GrupoModel(nome, disciplinas.get(posicao), (ProfessorModel) usuarioAtual, tipo));
 											
 											System.out.println("Grupo criado!");
 											
@@ -717,8 +561,8 @@ public class Main {
 									}	
 								}
 								
-								if(usuarioAtual.getClass() == Professor.class && (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") && !opcao.equals("4") && !opcao.equals("5")) && !opcao.equals("6")|| 
-										usuarioAtual.getClass() == Aluno.class && (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") && !opcao.equals("4"))) {
+								if(usuarioAtual.getClass() == ProfessorModel.class && (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") && !opcao.equals("4") && !opcao.equals("5")) && !opcao.equals("6")|| 
+										usuarioAtual.getClass() == AlunoModel.class && (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") && !opcao.equals("4"))) {
 									switch(opcao) {
 									case "V":
 										voltar = false;
@@ -802,7 +646,7 @@ public class Main {
 							break;
 					}	
 					
-					if(usuarioAtual.getClass() == Aluno.class) {
+					if(usuarioAtual.getClass() == AlunoModel.class) {
 						
 						switch(opcao) {
 							
@@ -815,11 +659,11 @@ public class Main {
 									do {
 										
 										if(disciplinaAlt.size() == 0) {
-											disciplinaAlt = new ArrayList<Disciplina>(disciplinas);
+											disciplinaAlt = new ArrayList<DisciplinaModel>(disciplinas);
 											System.out.println("Disciplinas");
 										}else System.out.println("Resultado da busca");
 										
-										for(Disciplina disciplina:disciplinaAlt) {
+										for(DisciplinaModel disciplina:disciplinaAlt) {
 											System.out.println(disciplinaAlt.indexOf(disciplina) +". " + disciplina.getNome());
 										}
 										
@@ -862,7 +706,7 @@ public class Main {
 										System.out.println("Informe o nome da disciplina: ");
 										nome = leitura.nextLine();
 										
-										disciplinaAlt = Disciplina.pesquisarDisciplinas(disciplinas, nome);
+										disciplinaAlt = DisciplinaModel.pesquisarDisciplinas(disciplinas, nome);
 										
 										if(disciplinaAlt.size() == 0) System.out.println("Não foi encontrado nenhuma disciplina com o nome informado");
 								
@@ -872,7 +716,7 @@ public class Main {
 											System.out.println("Informe O nome da Diciplina que deseja adicionar");
 											nome = leitura.nextLine();
 											
-											disciplinas.add(new Disciplina(nome));
+											disciplinas.add(new DisciplinaModel(nome));
 											
 											System.out.println("Disciplina cadastrada");
 											
@@ -923,11 +767,11 @@ public class Main {
 									do {
 										
 										if(cursoAlt.size() == 0) {
-											cursoAlt = new ArrayList<Curso>(cursos);
+											cursoAlt = new ArrayList<CursoModel>(cursos);
 											System.out.println("Curso");
 										}else System.out.println("Resultado da busca");
 										
-										for(Curso curso:cursoAlt) {
+										for(CursoModel curso:cursoAlt) {
 											System.out.println(cursoAlt.indexOf(curso) +". " + curso.getNome());
 										}
 										
@@ -969,7 +813,7 @@ public class Main {
 										System.out.println("Informe o nome do curso: ");
 										nome = leitura.nextLine();
 										
-										cursoAlt = Curso.pesquisaCurso(cursos, nome);
+										cursoAlt = CursoModel.pesquisaCurso(cursos, nome);
 										
 										if(cursoAlt.size() == 0) System.out.println("Não foi encontrado nenhum curso com o nome informado");
 										break;
@@ -997,7 +841,7 @@ public class Main {
 
 										prosseguir = false;
 										
-										cur = new Curso(nome, semestres);
+										cur = new CursoModel(nome, semestres);
 										
 										do {
 											
@@ -1005,7 +849,7 @@ public class Main {
 											
 												System.out.println("Disciplina");
 												
-												for(Disciplina disciplina:disciplinas) {
+												for(DisciplinaModel disciplina:disciplinas) {
 													posicao = disciplinas.indexOf(disciplina);
 													System.out.println(posicao + ". " + disciplina.getNome());
 												}
@@ -1112,8 +956,8 @@ public class Main {
 						}
 					}
 					
-					if(usuarioAtual.getClass() == Aluno.class && (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") && !opcao.equals("4") && !opcao.equals("5") && !opcao.equals("6") && !opcao.equals("V")) || 
-							usuarioAtual.getClass() == Professor.class && (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") && !opcao.equals("4")) && !opcao.equals("V")){
+					if(usuarioAtual.getClass() == AlunoModel.class && (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") && !opcao.equals("4") && !opcao.equals("5") && !opcao.equals("6") && !opcao.equals("V")) || 
+							usuarioAtual.getClass() == ProfessorModel.class && (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") && !opcao.equals("4")) && !opcao.equals("V")){
 						switch (opcao){
 						case "S":
 							sair = false;

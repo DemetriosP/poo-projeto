@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import ifnet.Curso;
-import ifnet.Disciplina;
+import model.CursoModel;
+import model.DisciplinaModel;
 
 public class CursoDAO {
 	
-	public void inserirCurso(Curso curso) {		
+	public static void inserirCurso(CursoModel curso) {		
 		
 		Conexao conexao = new Conexao();	
 		
@@ -34,13 +34,13 @@ public class CursoDAO {
 		inserirDisciplinaPorSemestre(curso);
 	}
 	
-	private void inserirDisciplinaPorSemestre(Curso curso) {
+	private static void inserirDisciplinaPorSemestre(CursoModel curso) {
 		
 		Conexao conexao = new Conexao();
 		
-		for (Map.Entry<Integer , ArrayList<Disciplina>> mapa : curso.getDisciplinasPorSemestre().entrySet()) { 
+		for (Map.Entry<Integer , ArrayList<DisciplinaModel>> mapa : curso.getDisciplinasPorSemestre().entrySet()) { 
 			
-			for(Disciplina disciplina: mapa.getValue()) {
+			for(DisciplinaModel disciplina: mapa.getValue()) {
 				
 				try {
 					
@@ -64,14 +64,14 @@ public class CursoDAO {
 			
 	}
 	
-	public ArrayList<Curso> selecionarCursos() {
+	public static ArrayList<CursoModel> selecionarCursos() {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
-		ArrayList<Curso> cursos = new ArrayList<Curso>();
+		ArrayList<CursoModel> cursos = new ArrayList<CursoModel>();
 		
-		Curso curso;
+		CursoModel curso;
 		String cursoID;
 		int semestres;
 		
@@ -87,7 +87,7 @@ public class CursoDAO {
 				cursoID = resultado.getString("curso_id");
 				semestres = resultado.getInt("semestres");
 				
-				curso = new Curso(cursoID, semestres);
+				curso = new CursoModel(cursoID, semestres);
 				curso.setDisciplinasPorSemestre(selecionarDisciplinaSemestre(cursoID));
 				
 				cursos.add(curso);
@@ -102,12 +102,12 @@ public class CursoDAO {
 		return cursos;
 	}
 	
-	public static Curso selecionarCurso(String cursoID) {
+	public static CursoModel selecionarCurso(String cursoID) {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 	
-		Curso curso = null;
+		CursoModel curso = null;
 		int semestres;
 		
 		try {
@@ -123,7 +123,7 @@ public class CursoDAO {
 			while(resultado != null && resultado.next()){
 				semestres = resultado.getInt("semestres");
 				
-				curso = new Curso(cursoID, semestres);
+				curso = new CursoModel(cursoID, semestres);
 				curso.setDisciplinasPorSemestre(selecionarDisciplinaSemestre(cursoID));
 
 			}
@@ -137,12 +137,12 @@ public class CursoDAO {
 		return curso;
 	}
 	
-	private static Map<Integer, ArrayList<Disciplina>> selecionarDisciplinaSemestre(String cursoID){
+	private static Map<Integer, ArrayList<DisciplinaModel>> selecionarDisciplinaSemestre(String cursoID){
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
-		Map<Integer, ArrayList<Disciplina>> disciplinasPorSemestre = new HashMap<Integer, ArrayList<Disciplina>>();
+		Map<Integer, ArrayList<DisciplinaModel>> disciplinasPorSemestre = new HashMap<Integer, ArrayList<DisciplinaModel>>();
 		
 		String disciplina;
 		int semestre;
@@ -162,10 +162,10 @@ public class CursoDAO {
 				semestre = resultado.getInt("semestre");
 				
 				if(disciplinasPorSemestre.containsKey(semestre)) {
-					disciplinasPorSemestre.get(semestre).add(new Disciplina(disciplina));
+					disciplinasPorSemestre.get(semestre).add(new DisciplinaModel(disciplina));
 				}else {
-					disciplinasPorSemestre.put(semestre, new ArrayList<Disciplina>());
-					disciplinasPorSemestre.get(semestre).add(new Disciplina(disciplina));
+					disciplinasPorSemestre.put(semestre, new ArrayList<DisciplinaModel>());
+					disciplinasPorSemestre.get(semestre).add(new DisciplinaModel(disciplina));
 				}
 			}
 			

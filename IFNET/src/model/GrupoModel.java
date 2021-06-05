@@ -1,4 +1,4 @@
-package ifnet;
+package model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,15 +6,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Grupo {
+public class GrupoModel {
 	
 	private String nome;
-	private Disciplina disciplina;
-	private ArrayList<Usuario> usuariosGrupo = new ArrayList<Usuario>();
-	private Professor criador;
+	private DisciplinaModel disciplina;
+	private ArrayList<UsuarioModel> usuariosGrupo = new ArrayList<UsuarioModel>();
+	private ProfessorModel criador;
 	private String tipo;
 	
-	public Grupo(String nome, Disciplina disciplina, Professor usuarioAtual, String tipo) {
+	public GrupoModel(String nome, DisciplinaModel disciplina, ProfessorModel usuarioAtual, String tipo) {
 		this.nome = nome;
 		this.disciplina = disciplina;
 		this.criador = usuarioAtual;
@@ -30,35 +30,35 @@ public class Grupo {
 		this.nome = nome;
 	}
 	
-	public Disciplina getDisciplina() {
+	public DisciplinaModel getDisciplina() {
 		return disciplina;
 	}
 	
-	public void setDisciplina(Disciplina disciplina) {
+	public void setDisciplina(DisciplinaModel disciplina) {
 		this.disciplina = disciplina;
 	}
 	
-	public ArrayList<Usuario> getUsuariosGrupo() {
+	public ArrayList<UsuarioModel> getUsuariosGrupo() {
 		return usuariosGrupo;
 	}
 
-	public void setUsuariosGrupo(ArrayList<Usuario> usuario) {
+	public void setUsuariosGrupo(ArrayList<UsuarioModel> usuario) {
 		this.usuariosGrupo = usuario;
 	}
 	
-	public Usuario getUsuarioGrupo(Usuario usuario) {
+	public UsuarioModel getUsuarioGrupo(UsuarioModel usuario) {
 		return usuariosGrupo.get(usuariosGrupo.indexOf(usuario));
 	}
 
-	public void setUsuarioGrupo(Usuario usuario) {
+	public void setUsuarioGrupo(UsuarioModel usuario) {
 		this.usuariosGrupo.add(usuario);
 	}
 	
-	public Usuario getCriador() {
+	public UsuarioModel getCriador() {
 		return criador;
 	}
 	
-	public void setCriador(Professor criador) {
+	public void setCriador(ProfessorModel criador) {
 		this.criador = criador;
 	}
 	
@@ -70,11 +70,11 @@ public class Grupo {
 		this.tipo = tipo;
 	}
 	
-	public static Map<Integer, Integer> consultarGrupoMaisUsuarios(ArrayList<Grupo> grupos) {
+	public static Map<Integer, Integer> consultarGrupoMaisUsuarios(ArrayList<GrupoModel> grupos) {
 		
 		Map<Integer,Integer> maisUsuarios = new HashMap<Integer, Integer>();
 		
-		for(Grupo grupo:grupos) {
+		for(GrupoModel grupo:grupos) {
 			maisUsuarios.put(grupos.indexOf(grupo), grupo.getUsuariosGrupo().size());
 		}
 		
@@ -84,11 +84,11 @@ public class Grupo {
 		return maisUsuariosOrdenado;
 	}
 	
-	public static ArrayList<Grupo> consultarGpPesquisaPorDisciplina(ArrayList<Grupo> grupos, Disciplina disciplina) {
+	public static ArrayList<GrupoModel> consultarGpPesquisaPorDisciplina(ArrayList<GrupoModel> grupos, DisciplinaModel disciplina) {
 		
-		ArrayList<Grupo> gruposPesquisados = new ArrayList<Grupo>();
+		ArrayList<GrupoModel> gruposPesquisados = new ArrayList<GrupoModel>();
 		
-		for(Grupo grupo:grupos) {
+		for(GrupoModel grupo:grupos) {
 			if(grupo.getDisciplina().getNome().contains(disciplina.getNome()) && grupo.getTipo().equals("Pesquisa")) 
 				gruposPesquisados.add(grupo);
 		}
@@ -96,11 +96,11 @@ public class Grupo {
 		return gruposPesquisados;
 	}
 	
-	public static ArrayList<Grupo> pesquisarGrupos(ArrayList<Grupo> grupos, String nome) {
+	public static ArrayList<GrupoModel> pesquisarGrupos(ArrayList<GrupoModel> grupos, String nome) {
 		
-		ArrayList<Grupo> gruposPesquisados = new ArrayList<Grupo>();
+		ArrayList<GrupoModel> gruposPesquisados = new ArrayList<GrupoModel>();
 		
-		for(Grupo grupo:grupos) 
+		for(GrupoModel grupo:grupos) 
 			if(grupo.getNome().toLowerCase().contains(nome.toLowerCase())) 
 				gruposPesquisados.add(grupo);
 		

@@ -5,12 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import ifnet.Aluno;
-import ifnet.Usuario;
+import model.AlunoModel;
+import model.UsuarioModel;
 
 public class AlunoDAO {
 	
-	public void inserirAluno(Aluno aluno) {		
+	public static void inserirAluno(AlunoModel aluno) {		
 			
 		Conexao conexao = new Conexao();	
 		
@@ -33,7 +33,7 @@ public class AlunoDAO {
 		}
 	}
 	
-	public static boolean eAluno(String prontuario) {
+	public static boolean eAluno(String usuarioID) {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
@@ -44,7 +44,7 @@ public class AlunoDAO {
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
-			statement.setString(1, prontuario);
+			statement.setString(1, usuarioID);
 		
 			resultado = statement.executeQuery();
 			
@@ -59,15 +59,15 @@ public class AlunoDAO {
 		
 	}
 	
-	public ArrayList<Usuario> selecionarAlunos(){
+	public static ArrayList<UsuarioModel> selecionarAlunos(){
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
-		ArrayList<Usuario> alunos = new ArrayList<Usuario>();
+		ArrayList<UsuarioModel> alunos = new ArrayList<UsuarioModel>();
 		
 		String usuarioID, email, cursoID;
-		String[] usuario;
+		UsuarioModel usuario;
 		
 		try {
 			
@@ -84,7 +84,8 @@ public class AlunoDAO {
 				
 				usuario = UsuarioDAO.selecionaUsuario(usuarioID);
 				
-				alunos.add(new Aluno(usuario[0], usuarioID, email,  usuario[1], CursoDAO.selecionarCurso(cursoID)));
+				alunos.add(new AlunoModel(usuario.getNome(), usuario.getProntuario(), usuario.getSenha(),  
+						email, CursoDAO.selecionarCurso(cursoID)));
 			}
 			
 			statement.close();
@@ -97,15 +98,15 @@ public class AlunoDAO {
 		
 	}
 	
-	public static Aluno selecionarAluno(String usuarioID){
+	public static AlunoModel selecionarAluno(String usuarioID){
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
-		Aluno aluno = null;
+		AlunoModel aluno = null;
 		
 		String email, cursoID;
-		String[] usuario;
+		UsuarioModel usuario;
 		
 		try {
 			
@@ -123,7 +124,8 @@ public class AlunoDAO {
 				
 				usuario = UsuarioDAO.selecionaUsuario(usuarioID);
 				
-				aluno = new Aluno(usuario[0], usuarioID, email,  usuario[1], CursoDAO.selecionarCurso(cursoID));
+				aluno = new AlunoModel(usuario.getNome(), usuario.getProntuario(), usuario.getSenha(),  
+						email, CursoDAO.selecionarCurso(cursoID));
 			}
 			
 			statement.close();

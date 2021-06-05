@@ -1,4 +1,4 @@
-package ifnet;
+package model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,44 +6,44 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Relacionamento {
+public class RelacionamentoModel {
 	
-	private Map<Integer, ArrayList<Usuario>> grauUsuario = new HashMap<Integer, ArrayList<Usuario>>();
+	private Map<Integer, ArrayList<UsuarioModel>> grauUsuario = new HashMap<Integer, ArrayList<UsuarioModel>>();
 	
-	public Relacionamento() {
+	public RelacionamentoModel() {
 		this.criarMapa();
 	}
 	
-	public Map<Integer, ArrayList<Usuario>> getGrauUsuario() {
+	public Map<Integer, ArrayList<UsuarioModel>> getGrauUsuario() {
 		return grauUsuario;
 	}
 	
-	public void setGrauUsuario(int grauRelacionamento, Usuario usuarioRelacioando) {
+	public void setGrauUsuario(int grauRelacionamento, UsuarioModel usuarioRelacioando) {
 		this.grauUsuario.get(grauRelacionamento).add(usuarioRelacioando);
 	}
 
-	public void setGrauUsuario(Map<Integer, ArrayList<Usuario>> grauUsuario) {
+	public void setGrauUsuario(Map<Integer, ArrayList<UsuarioModel>> grauUsuario) {
 		this.grauUsuario = grauUsuario;
 	}
 	
 	private void criarMapa() {
-		this.grauUsuario.put(0, new ArrayList<Usuario>());
-		this.grauUsuario.put(1, new ArrayList<Usuario>());
-		this.grauUsuario.put(2, new ArrayList<Usuario>());
+		this.grauUsuario.put(0, new ArrayList<UsuarioModel>());
+		this.grauUsuario.put(1, new ArrayList<UsuarioModel>());
+		this.grauUsuario.put(2, new ArrayList<UsuarioModel>());
 	}
 	
-	public static boolean relacionarUsuario(Usuario usuarioAtual, Usuario usuarioRelacionar) {
+	public static boolean relacionarUsuario(UsuarioModel usuarioAtual, UsuarioModel usuarioRelacionar) {
 		
-		Relacionamento relacionar = null;
-		ArrayList<Usuario> usuarios;
+		RelacionamentoModel relacionar = null;
+		ArrayList<UsuarioModel> usuarios;
 		
 		relacionar = usuarioAtual.getRelacionamento();
 		
-		for (Map.Entry<Integer , ArrayList<Usuario>> mapa : relacionar.grauUsuario.entrySet()) { 
+		for (Map.Entry<Integer , ArrayList<UsuarioModel>> mapa : relacionar.grauUsuario.entrySet()) { 
 			
 			usuarios = mapa.getValue();
 			
-			for(Usuario usuario:usuarios) {
+			for(UsuarioModel usuario:usuarios) {
 				if(usuario.getProntuario().equals(usuarioRelacionar.getProntuario())) return false;
 			}
 		}
@@ -54,9 +54,9 @@ public class Relacionamento {
 		
 	}
 	
-	public static void alterarGrauConfiabilidade(Usuario usuarioAtual, int grauAtual, int novoGrau, int posicaoRelacao) {
+	public static void alterarGrauConfiabilidade(UsuarioModel usuarioAtual, int grauAtual, int novoGrau, int posicaoRelacao) {
 		
-		Usuario usuario;
+		UsuarioModel usuario;
 		
 		usuario = usuarioAtual.getRelacionamento().grauUsuario.get(grauAtual).get(posicaoRelacao);
 		
@@ -66,19 +66,19 @@ public class Relacionamento {
 		
 	}
 
-	public static Map<Integer, Integer> consultarUsuariosMaisRelacionado(ArrayList<Usuario> usuarios) {
+	public static Map<Integer, Integer> consultarUsuariosMaisRelacionado(ArrayList<UsuarioModel> usuarios) {
 		
 		Map<Integer,Integer> maisRelacionados = new HashMap<Integer, Integer>();
 		
-		Relacionamento relacionamento = null;
+		RelacionamentoModel relacionamento = null;
 		
 		int tamanho = 0;
 		
-		for(Usuario usuario:usuarios) {
+		for(UsuarioModel usuario:usuarios) {
 			
 			relacionamento = usuario.getRelacionamento();
 			
-			for (Map.Entry<Integer , ArrayList<Usuario>> mapa : relacionamento.grauUsuario.entrySet()) { 
+			for (Map.Entry<Integer , ArrayList<UsuarioModel>> mapa : relacionamento.grauUsuario.entrySet()) { 
 				tamanho += mapa.getValue().size();
 			}
 			
@@ -93,18 +93,18 @@ public class Relacionamento {
 		return maisRelacionadosOrdenado;
 	}
 	
-	public static boolean estaRelacionado(Usuario usuarioAtual, Usuario usuarioRelacionar) {
+	public static boolean estaRelacionado(UsuarioModel usuarioAtual, UsuarioModel usuarioRelacionar) {
 		
-		Relacionamento relacionar = null;
-		ArrayList<Usuario> usuarios;
+		RelacionamentoModel relacionar = null;
+		ArrayList<UsuarioModel> usuarios;
 		
 		relacionar = usuarioAtual.getRelacionamento();
 		
-		for (Map.Entry<Integer , ArrayList<Usuario>> mapa : relacionar.grauUsuario.entrySet()) { 
+		for (Map.Entry<Integer , ArrayList<UsuarioModel>> mapa : relacionar.grauUsuario.entrySet()) { 
 			
 			usuarios = mapa.getValue();
 			
-			for(Usuario usuario:usuarios) {
+			for(UsuarioModel usuario:usuarios) {
 				if(usuario.getProntuario().equals(usuarioRelacionar.getProntuario())) return true;
 			}
 		}

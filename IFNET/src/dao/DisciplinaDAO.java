@@ -5,11 +5,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import ifnet.Disciplina;
+import model.DisciplinaModel;
 
 public class DisciplinaDAO {
 	
-	public void insereDisciplina(Disciplina disciplina) {		
+	public static void insereDisciplina(DisciplinaModel disciplina) {		
 		
 		Conexao conexao = new Conexao();	
 		
@@ -28,12 +28,12 @@ public class DisciplinaDAO {
 		}
 	}
 	
-	public ArrayList<Disciplina> selecionaDisciplina() {
+	public static ArrayList<DisciplinaModel> selecionarDisciplinas() {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
-		ArrayList<Disciplina> disciplinas = new ArrayList<Disciplina>();
+		ArrayList<DisciplinaModel> disciplinas = new ArrayList<DisciplinaModel>();
 		
 		String disciplina;
 		
@@ -48,7 +48,7 @@ public class DisciplinaDAO {
 			while(resultado != null && resultado.next()){
 				disciplina = resultado.getString("disciplina_id");
 				
-				disciplinas.add(new Disciplina(disciplina));
+				disciplinas.add(new DisciplinaModel(disciplina));
 			}
 			
 			statement.close();

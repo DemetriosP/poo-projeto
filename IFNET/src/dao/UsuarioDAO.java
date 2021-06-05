@@ -4,11 +4,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import ifnet.Usuario;
+import model.UsuarioModel;
 
 public class UsuarioDAO {
 
-	public static void insereUsuario(Usuario usuario) {		
+	public static void insereUsuario(UsuarioModel usuario) {		
 		
 		Conexao conexao = new Conexao();	
 		
@@ -29,12 +29,12 @@ public class UsuarioDAO {
 		}
 	}
 	
-	public static String[] selecionaUsuario(String usuarioID) {
+	public static UsuarioModel selecionaUsuario(String usuarioID) {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
-		String[] usuario = new String[2];
+		String nome = null, senha = null;
 		
 		try {
 			
@@ -47,8 +47,8 @@ public class UsuarioDAO {
 			resultado = statement.executeQuery();
 			
 			while(resultado != null && resultado.next()){
-				usuario[0] = resultado.getString("nome");
-				usuario[1] = resultado.getString("senha");
+				nome = resultado.getString("nome");
+				senha = resultado.getString("senha");
 			}
 			
 			statement.close();
@@ -57,7 +57,60 @@ public class UsuarioDAO {
 			e.printStackTrace();
 		}
 		
-		return null;
+		return new UsuarioModel(nome, usuarioID, senha);
 	}
 	
+	public static boolean usuarioExiste(String prontuario) {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		try {
+			
+			String query = "select * from usuario where usuario_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, prontuario);
+		
+			resultado = statement.executeQuery();
+			
+			if(resultado != null && resultado.next())return true;
+			else return false;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+		
+	}
+	
+	public static boolean loginUsuario(UsuarioModel usuario) {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		try {
+			
+			String query = "select * from usuario where usuario_id like ? and senha like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, usuario.getProntuario());
+			statement.setString(2, usuario.getSenha());
+		
+			resultado = statement.executeQuery();
+			
+			if(resultado != null && resultado.next())return true;
+			else return false;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	 
 }

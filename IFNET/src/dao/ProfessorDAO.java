@@ -5,14 +5,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import ifnet.Area;
-import ifnet.Disciplina;
-import ifnet.Professor;
-import ifnet.Usuario;
+import model.AreaModel;
+import model.DisciplinaModel;
+import model.ProfessorModel;
+import model.UsuarioModel;
 
 public class ProfessorDAO {
 	
-	public void insere(Professor professor) {		
+	public static void inserirProfessor(ProfessorModel professor) {		
 		
 		Conexao conexao = new Conexao();	
 		
@@ -35,7 +35,7 @@ public class ProfessorDAO {
 		}
 	}
 	
-	public static boolean eProfessor(String prontuario) {
+	public static boolean eProfessor(String usuarioID) {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
@@ -46,7 +46,7 @@ public class ProfessorDAO {
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
-			statement.setString(1, prontuario);
+			statement.setString(1, usuarioID);
 		
 			resultado = statement.executeQuery();
 			
@@ -61,15 +61,15 @@ public class ProfessorDAO {
 		
 	}
 	
-	public ArrayList<Usuario> selecionarProfessores(){
+	public static ArrayList<UsuarioModel> selecionarProfessores(){
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
-		ArrayList<Usuario> professor = new ArrayList<Usuario>();
+		ArrayList<UsuarioModel> professor = new ArrayList<UsuarioModel>();
 		
 		String usuarioID, areaID, disciplinaID;
-		String[] usuario;
+		UsuarioModel usuario;
 		
 		try {
 			
@@ -86,7 +86,8 @@ public class ProfessorDAO {
 				
 				usuario = UsuarioDAO.selecionaUsuario(usuarioID);
 				
-				professor.add(new Professor(usuario[0], usuarioID ,usuario[1], new Area(areaID), new Disciplina(disciplinaID)));
+				professor.add(new ProfessorModel(usuario.getNome(), usuario.getProntuario() ,usuario.getSenha(), 
+						new AreaModel(areaID), new DisciplinaModel(disciplinaID)));
 			}
 			
 			statement.close();
@@ -99,15 +100,15 @@ public class ProfessorDAO {
 		
 	}
 	
-	public static Professor selecionarProfessor(String usuarioID){
+	public static ProfessorModel selecionarProfessor(String usuarioID){
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
 		
-		Professor professor = null;
+		ProfessorModel professor = null;
 		
 		String areaID, disciplinaID;
-		String[] usuario;
+		UsuarioModel usuario;
 		
 		try {
 			
@@ -125,7 +126,8 @@ public class ProfessorDAO {
 				
 				usuario = UsuarioDAO.selecionaUsuario(usuarioID);
 				
-				professor = new Professor(usuario[0], usuarioID ,usuario[1], new Area(areaID), new Disciplina(disciplinaID));
+				professor = new ProfessorModel(usuario.getNome(), usuario.getProntuario() ,usuario.getSenha(), 
+						new AreaModel(areaID), new DisciplinaModel(disciplinaID));
 			}
 			
 			statement.close();

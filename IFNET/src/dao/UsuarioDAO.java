@@ -60,6 +60,37 @@ public class UsuarioDAO {
 		return new UsuarioModel(nome, usuarioID, senha);
 	}
 	
+	public static UsuarioModel pesquisarUsuario(String nome) {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		String usuarioID = null, senha = null;
+		
+		try {
+			
+			String query = "select * from usuario where nome like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, nome);
+
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				usuarioID = resultado.getString("usuario_id");
+				senha = resultado.getString("senha");
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return new UsuarioModel(nome, usuarioID, senha);
+	}
+	
 	public static boolean usuarioExiste(String prontuario) {
 		
 		Conexao conexao = new Conexao();

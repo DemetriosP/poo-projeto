@@ -139,5 +139,45 @@ public class ProfessorDAO {
 		return professor;
 		
 	}
+	
+	public static ArrayList<UsuarioModel> pesquisarProfessores(String nome){
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		ArrayList<UsuarioModel> professor = new ArrayList<UsuarioModel>();
+		
+		String areaID, disciplinaID;
+		UsuarioModel usuario;
+		
+		try {
+			
+			String query = "select * from professor where nome like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, "%nome%");
+
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				areaID = resultado.getString("area_id");
+				disciplinaID = resultado.getString("disciplina_id");
+				
+				usuario = UsuarioDAO.pesquisarUsuario(nome);
+				
+				professor.add(new ProfessorModel(usuario.getNome(), usuario.getProntuario() ,usuario.getSenha(), 
+						new AreaModel(areaID), new DisciplinaModel(disciplinaID)));
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return professor;
+		
+	}
 
 }

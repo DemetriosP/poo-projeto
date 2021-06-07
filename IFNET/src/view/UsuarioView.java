@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import dao.UsuarioDAO;
-import excecoes.OpcaoInexistenteException;
 import excecoes.UsuarioCadastradoException;
 import model.UsuarioModel;
 

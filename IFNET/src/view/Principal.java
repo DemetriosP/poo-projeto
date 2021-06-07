@@ -8,6 +8,7 @@ import java.util.Scanner;
 import dao.AlunoDAO;
 import dao.ConteudoDAO;
 import dao.ProfessorDAO;
+import dao.RelacionamentoDAO;
 import excecoes.GrauConfiabilidadeAtualException;
 import excecoes.OpcaoInexistenteException;
 import excecoes.UsuarioCadastradoException;
@@ -40,6 +41,8 @@ public class Principal {
 		Map<Integer,Integer> maisRelacionados = new HashMap<Integer, Integer>();
 		Map<Integer,Integer> maisUsuarios = new HashMap<Integer, Integer>();
 		
+		ArrayList<String[]> dados = new ArrayList<String[]>();
+		
 		Scanner leitura = new Scanner(System.in);
 		
 		UsuarioModel usu = null;
@@ -52,7 +55,7 @@ public class Principal {
 		AreaModel areaCadastro;
 		UsuarioModel usuarioAtual = null;
 		boolean comecar = true, sair = true, voltar = true, entrou = false, prosseguir = false, cadastro = false, relacionar = false;
-		String opcao = "", prontuario = "", senha, nome, tipo, titulo, grauConf[] = {"Conhecidos", "Amigos", "Melhores Amigos"};	
+		String opcao = "", prontuario = "", senha, nome, tipo, titulo;	
 		int posicao = -1, semestre = 0, semestres = 0, grau, grauAtual = -1, novoGrau = -1, volta;
 		
 		UsuarioModel usuario;
@@ -199,125 +202,19 @@ public class Principal {
 									
 									case "1":
 										
-										relacionar = RelacionamentoModel.relacionarUsuario(usuarioAtual, usuarios.get(usuarios.indexOf(usu)));
-										
-										if(relacionar) System.out.println("O relacionamento foi criado");
-										else System.out.println("O usuário atual e o usuário informado já estão relacionados");
-										
+										RelacionamentoView.relacionarUsuario(usuarioAtual);
 										break;
 									case "2":
 
-										if(RelacionamentoModel.estaRelacionado(usuarioAtual, usu)) {
-											
-											for (Map.Entry<Integer , ArrayList<UsuarioModel>> mapa : usuarioAtual.getRelacionamento().getGrauUsuario().entrySet()) { 
-												
-												usuariosMapa = mapa.getValue();
-												grau = mapa.getKey();
-												
-												for(UsuarioModel usuario:usuariosMapa) {
-													if(usuario.getProntuario().equals(usu.getProntuario())) {
-														grauAtual = grau;
-														posicao = usuariosMapa.indexOf(usuario);
-													}
-												}
-											}
-											
-											do{
-
-												try {
-													
-													System.out.println("Grau de Confiabilidade Atual: " + grauConf[grauAtual]);
-													
-													System.out.println("Graus de confiabilidade\n0.Conhecidos\n1.Amigos\n2.Amigos Próximos");
-													
-													System.out.print("Informe o número do grau de confiabilidade para o qual a relação será alterada: ");
-													novoGrau = Integer.parseInt(leitura.nextLine());
-													
-													if(novoGrau == grauAtual) {
-														throw new GrauConfiabilidadeAtualException();
-													}
-													
-													if(novoGrau > 2 || novoGrau < 0) {
-														throw new OpcaoInexistenteException();
-													}
-
-													prosseguir = true;
-													
-												} catch (NumberFormatException excecao) {
-													System.out.println("O valor informado não é um número inteiro");
-												} catch (GrauConfiabilidadeAtualException excecao) {
-													System.out.println(excecao.getMessage());
-												} catch (OpcaoInexistenteException excecao) {
-													System.out.println(excecao.getMessage());
-													conteudoAlt.clear();
-												}
-
-											}while(!prosseguir);
-
-											prosseguir = false;
-											
-											RelacionamentoModel.alterarGrauConfiabilidade(usuarioAtual, grauAtual, novoGrau, posicao);
-											
-											System.out.println("Grau de Confiabilidade Alterado");
-											
-										}else System.out.println("Esses usuários não estão relacionados");
-										
+										RelacionamentoView.alterarGrauRelacionamento(usuarioAtual);
 										break;
 									case "3":
 										
-										if(RelacionamentoModel.estaRelacionado(usuarioAtual, usu)) {
-
-											for (Map.Entry<Integer , ArrayList<UsuarioModel>> mapa : usuarioAtual.getRelacionamento().getGrauUsuario().entrySet()) { 
-																					
-												usuariosMapa = mapa.getValue();
-												grau = mapa.getKey();
-												
-												for(UsuarioModel usuario:usuariosMapa) {
-													if(usuario.getProntuario().equals(usu.getProntuario())) {
-														grauAtual = grau;
-														posicao = usuariosMapa.indexOf(usuario);
-													}
-												}
-											}
-											
-											do {
-												
-												System.out.println("Você tem certeza que deseja excluir o relacionamento? "
-														+ "\n1.Sim\n2.Não");
-												opcao = leitura.nextLine();
-												
-												switch(opcao) {
-												
-													case "1":
-														usuarioAtual.getRelacionamento().getGrauUsuario().get(grauAtual).remove(posicao);
-														System.out.println("Relacionamento excluído");
-														break;
-													case "2":
-														System.out.println("Relacionamento não excluído");
-														break;
-													default:
-														System.out.println("Opção invàlida");
-												}
-
-											}while(!opcao.equals("1") && !opcao.equals("2"));
-												
-										}else System.out.println("Você e o usuário selecionado não possuem relação");
-
+										RelacionamentoView.excluirRelacionamento(usuarioAtual);
 										break;
 									case "4":
 										
-										maisRelacionados = RelacionamentoModel.consultarUsuariosMaisRelacionado(usuarios);
-										
-										System.out.println("TOP 10 Usuários mais relacionados");
-										
-										volta = 0;
-										
-										for (Map.Entry<Integer , Integer> mapa : maisRelacionados.entrySet()) {
-											System.out.println("Usuário: " + usuarios.get(mapa.getKey()).getNome() + "\nQuantidade de relacionamentos: " + mapa.getValue() + "\n");
-											volta++;
-											if(volta == 9) break;
-										}
-										
+										RelacionamentoView.usuarioMaisRelacionados();
 										break;
 									case "V":
 										voltar = false;

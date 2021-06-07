@@ -136,5 +136,44 @@ public class AlunoDAO {
 		
 		return aluno;
 	}
+	
+	public static ArrayList<UsuarioModel> pesquisarAlunos(String nome){
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		ArrayList<UsuarioModel> alunos = new ArrayList<UsuarioModel>();
+		
+		String email, cursoID;
+		UsuarioModel usuario;
+		
+		try {
+			
+			String query = "select * from aluno where nome like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				email = resultado.getString("email");
+				cursoID = resultado.getString("curso_id");
+				
+				usuario = UsuarioDAO.pesquisarUsuario(nome);
+				
+				alunos.add(new AlunoModel(usuario.getNome(), usuario.getProntuario(), usuario.getSenha(),  
+						email, CursoDAO.selecionarCurso(cursoID)));
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return alunos;
+		
+	}
+	
 
 }

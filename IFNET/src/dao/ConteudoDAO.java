@@ -148,7 +148,7 @@ public class ConteudoDAO {
 		
 		try {
 			
-			String query = "delete from where codigo like ?";
+			String query = "delete from conteudo where codigo like ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			

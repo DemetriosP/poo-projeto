@@ -41,6 +41,8 @@ public class ConteudoView {
 		int codigo;
 		String opcao;
 		
+		exibirConteudo(conteudos);
+		
 		System.out.println("Infome o codigo do contéudo");
 		codigo = Integer.parseInt(leitura.nextLine());
 		

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 public class GrupoModel {
 	
+	private int codigo;
 	private String nome;
 	private DisciplinaModel disciplina;
 	private ArrayList<UsuarioModel> usuariosGrupo = new ArrayList<UsuarioModel>();
@@ -20,6 +21,14 @@ public class GrupoModel {
 		this.criador = usuarioAtual;
 		this.tipo = tipo;
 		this.usuariosGrupo.add(usuarioAtual);
+	}
+	
+	public int getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(int codigo) {
+		this.codigo = codigo;
 	}
 	
 	public String getNome() {

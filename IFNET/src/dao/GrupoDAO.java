@@ -59,7 +59,29 @@ public class GrupoDAO {
 			System.out.println("Erro2");
 		}
 	}
-
+	
+	public static void inserirUsuariosGrupo(int grupoID, UsuarioModel usuario) {
+		
+		Conexao conexao = new Conexao();
+		
+		try {
+			
+			String query = "insert into usuarios_grupo (grupo_id, usuario_id) values (?,?)";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setInt(1, grupoID);
+			statement.setString(2, usuario.getProntuario());
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLIntegrityConstraintViolationException e) {
+			System.out.println("Erro");
+		} catch (SQLException e) {
+			System.out.println("Erro2");
+		}
+	}
+	
 	private static int selecionaGrupoID(GrupoModel grupo) {
 		
 		Conexao conexao = new Conexao();
@@ -102,6 +124,7 @@ public class GrupoDAO {
 		ArrayList<GrupoModel> grupos = new ArrayList<GrupoModel>();
 		GrupoModel grupo = null;
 		String nome, disciplina, usuario, tipo;
+		int grupoID;
 		
 		try {
 			
@@ -112,13 +135,16 @@ public class GrupoDAO {
 			resultado = statement.executeQuery();
 			
 			while(resultado != null && resultado.next()){
+				grupoID = resultado.getInt("grupo_id");
 				nome = resultado.getString("nome");
 				disciplina = resultado.getString("disciplina_id");
 				usuario = resultado.getString("usuario_id");
 				tipo = resultado.getString("tipo");
 				
 				grupo = new GrupoModel(nome, new DisciplinaModel(disciplina), ProfessorDAO.selecionarProfessor(usuario), tipo);
-				grupos.get(grupos.indexOf(grupo)).setUsuariosGrupo(selecionaUsuariosGrupo(grupo));
+				grupo.setCodigo(grupoID);
+				grupo.setUsuariosGrupo(selecionaUsuariosGrupo(grupoID));
+				
 			}
 			
 			statement.close();
@@ -130,12 +156,10 @@ public class GrupoDAO {
 		return grupos;
 	}
 	
-	private static ArrayList<UsuarioModel> selecionaUsuariosGrupo(GrupoModel grupo) {
+	private static ArrayList<UsuarioModel> selecionaUsuariosGrupo(int grupoID) {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado = null;
-		
-		int grupoID = selecionaGrupoID(grupo);
 		
 		ArrayList<UsuarioModel> usuarios = new ArrayList<UsuarioModel>();
 		
@@ -168,6 +192,191 @@ public class GrupoDAO {
 		}
 		
 		return usuarios;
+	}
+	
+	public static ArrayList<GrupoModel> selecionaGrupoPorDisciplina(String disciplinaID) {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		ArrayList<GrupoModel> grupos = new ArrayList<GrupoModel>();
+		GrupoModel grupo = null;
+		String nome, disciplina, usuario, tipo;
+		int grupoID;
+		
+		try {
+			
+			String query = "select * from grupo where disciplina_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, "%disciplinaID%");
+		
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				grupoID = resultado.getInt("grupo_id");
+				nome = resultado.getString("nome");
+				disciplina = resultado.getString("disciplina_id");
+				usuario = resultado.getString("usuario_id");
+				tipo = resultado.getString("tipo");
+				
+				grupo = new GrupoModel(nome, new DisciplinaModel(disciplina), ProfessorDAO.selecionarProfessor(usuario), tipo);
+				grupo.setCodigo(grupoID);
+				grupo.setUsuariosGrupo(selecionaUsuariosGrupo(grupoID));
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return grupos;
+	}
+	
+	public static ArrayList<String[]> consultarGruposMaisUsuarios() {
+		
+		Conexao conexao = new Conexao();	
+		ResultSet resultado = null;
+		
+		ArrayList<String[]> dados = new ArrayList<String[]>();
+		
+		int voltas = 0;
+		
+		try {
+			
+			String query = "select grupo_id, count(*) from usuarios_grupo group by grupo_id having count(*) > 0 order by count(*) desc";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			resultado = statement.executeQuery();
+			
+			while((resultado != null && resultado.next()) && voltas < 10) {
+				
+				String[] relacionamento = new String [2];
+				
+				relacionamento[0] = resultado.getString("grupo_id");
+				relacionamento[1] = resultado.getString("count(*)");
+			
+				dados.add(relacionamento);
+				voltas++;
+			}
+			
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return dados;
+	}
+	
+	public static GrupoModel selecionarGrupo(int grupoID) {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		GrupoModel grupo = null;
+		String nome, disciplina, usuario, tipo;
+		
+		try {
+			
+			String query = "select * from grupo where grupo_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setInt(1, grupoID);
+		
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				nome = resultado.getString("nome");
+				disciplina = resultado.getString("disciplina_id");
+				usuario = resultado.getString("usuario_id");
+				tipo = resultado.getString("tipo");
+				
+				grupo = new GrupoModel(nome, new DisciplinaModel(disciplina), ProfessorDAO.selecionarProfessor(usuario), tipo);
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return grupo;
+	}
+	
+	public static boolean grupoExiste(int grupoID) {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		try {
+			
+			String query = "select * from grupo where grupo_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setInt(1, grupoID);
+		
+			resultado = statement.executeQuery();
+			
+			if(resultado != null && resultado.next())return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	public static boolean usuarioPresente(int grupoID, UsuarioModel usuarioAtual) {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		try {
+			
+			String query = "select * from usuarios_grupo where grupo_id like ? and usuario_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setInt(1, grupoID);
+			statement.setString(2, usuarioAtual.getProntuario());
+		
+			resultado = statement.executeQuery();
+			
+			if(resultado != null && resultado.next())return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;	
+	}
+	
+	public static void excluirGrupo(int codigo) {
+		
+		Conexao conexao = new Conexao();	
+		
+		try {
+			
+			String query = "delete from grupo where codigo like ? and ";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setInt(1, codigo);
+			
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }

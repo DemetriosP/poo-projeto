@@ -175,5 +175,27 @@ public class AlunoDAO {
 		
 	}
 	
+	public static void excluirAluno(UsuarioModel usuario) {
+		
+		Conexao conexao = new Conexao();	
+		
+		try {
+			
+			String query = "delete from aluno where usuario_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, usuario.getProntuario());
+			
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		UsuarioDAO.excluirUsuario(usuario);
+	}
+	
 
 }

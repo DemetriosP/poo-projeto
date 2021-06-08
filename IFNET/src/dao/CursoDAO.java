@@ -178,4 +178,50 @@ public class CursoDAO {
 		return disciplinasPorSemestre;
 	}
 	
+	
+	public static void excluirCurso(String cursoID) {
+		
+		Conexao conexao = new Conexao();	
+		
+		try {
+			
+			String query = "delete from curso where curso_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, cursoID);
+			
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static boolean contemCurso() {
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado = null;
+		
+		try {
+			
+			String query = "select * from curso";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			resultado = statement.executeQuery();
+			
+			if(resultado != null && resultado.next())return true;
+			else return false;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+		
+	}
+	
 }

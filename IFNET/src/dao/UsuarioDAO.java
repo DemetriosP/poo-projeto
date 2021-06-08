@@ -143,5 +143,68 @@ public class UsuarioDAO {
 		return false;
 	}
 	
+	public static void mudarNome(UsuarioModel usuarioAtual, String nome) {
+		
+		Conexao conexao = new Conexao();
+		
+		try {
+			
+			String query = "update usuario set nome = ? where usuario_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, nome);
+			statement.setString(2, usuarioAtual.getProntuario());
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static void mudarSenha(UsuarioModel usuarioAtual, String senha) {
+		
+		Conexao conexao = new Conexao();
+		
+		try {
+			
+			String query = "update usuario set senha = ? where usuario_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, senha);
+			statement.setString(2, usuarioAtual.getProntuario());
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static void excluirUsuario(UsuarioModel usuario) {
+		
+		Conexao conexao = new Conexao();	
+		
+		try {
+			
+			String query = "delete from usuario where usuario_id like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, usuario.getProntuario());
+			
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	 
 }

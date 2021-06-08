@@ -3,6 +3,8 @@ package view;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import dao.AlunoDAO;
+import dao.ProfessorDAO;
 import dao.UsuarioDAO;
 import excecoes.UsuarioCadastradoException;
 import model.UsuarioModel;
@@ -75,6 +77,63 @@ public class UsuarioView {
 			
 	}
 	
+	public static void mudarNome(UsuarioModel usuarioAtual) {
+		
+		String nome;
+		
+		System.out.println("Nome Atual: " + usuarioAtual.getNome());
+		System.out.print("Novo nome: ");
+		nome = leitura.nextLine();
+		usuarioAtual.setNome(nome);
+		UsuarioDAO.mudarNome(usuarioAtual, nome);
+		System.out.println("Nome alterado");
+		
+	}
 	
+	public static void mudarSenha(UsuarioModel usuarioAtual) {
+		
+		String senha;
+		
+		System.out.println("Senha Atual: " + usuarioAtual.getSenha());
+		System.out.print("Novo senha: ");
+		senha = leitura.nextLine();
+		usuarioAtual.setSenha(senha);
+		UsuarioDAO.mudarSenha(usuarioAtual, senha);
+		System.out.println("Senha alterado");
+		
+	}
+	
+	public static boolean excluirConta(UsuarioModel usuarioAtual) {
+		
+		boolean excluido = false;
+		
+		String opcao;
+		
+		do {
+			
+			System.out.println("Você tem certeza que deseja excluir a sua conta? "
+					+ "Essa ação não pode ser desfeita\n1.Sim\n2.Não");
+			opcao = leitura.nextLine();
+			
+			switch(opcao) {
+			
+				case "1":
+					if(AlunoDAO.eAluno(usuarioAtual.getProntuario())) AlunoDAO.excluirAluno(usuarioAtual);
+					else ProfessorDAO.excluirProfessor(usuarioAtual);
+					excluido = true;
+					System.out.println("Conta excluída");
+					break;
+				case "2":
+					excluido = false;
+					System.out.println("Conta não excluída");
+					break;
+				default:
+					System.out.println("Opção invàlida");
+			}
+			
+		}while(!opcao.equals("1") && !opcao.equals("2"));
+		
+		return excluido;
+	}
 		
 }

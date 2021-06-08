@@ -33,8 +33,8 @@ public class ConteudoDAO {
 	public static ArrayList<ConteudoModel> selecionaConteudos() {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
-		ArrayList<ConteudoModel> conteudos = new ArrayList<ConteudoModel>();
+		ResultSet resultado;
+		ArrayList<ConteudoModel> conteudos = new ArrayList<>();
 		String titulo, tipo, usuarioID;
 		int codigo;
 		
@@ -73,7 +73,7 @@ public class ConteudoDAO {
 	public static String selecionarConteudo(int codigo) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		String usuarioID = null;
 		
 		try {
@@ -82,7 +82,7 @@ public class ConteudoDAO {
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
-			statement.setInt(0, codigo);
+			statement.setInt(1, codigo);
 		
 			resultado = statement.executeQuery();
 			
@@ -103,8 +103,8 @@ public class ConteudoDAO {
 	public static ArrayList<ConteudoModel> pesquisarConteudos(String palavra) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
-		ArrayList<ConteudoModel> conteudos = new ArrayList<ConteudoModel>();
+		ResultSet resultado;
+		ArrayList<ConteudoModel> conteudos = new ArrayList<>();
 		String titulo, tipo, usuarioID;
 		int codigo;
 		
@@ -114,7 +114,7 @@ public class ConteudoDAO {
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
-			statement.setString(1, "%palavra%");
+			statement.setString(1, "%" + palavra + "%");
 		
 			resultado = statement.executeQuery();
 			
@@ -148,7 +148,7 @@ public class ConteudoDAO {
 		
 		try {
 			
-			String query = "delete from conteudo where codigo like ?";
+			String query = "delete from conteudo where conteudo_id like ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			

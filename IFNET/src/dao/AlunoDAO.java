@@ -36,7 +36,7 @@ public class AlunoDAO {
 	public static boolean eAluno(String usuarioID) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		try {
 			
@@ -47,9 +47,8 @@ public class AlunoDAO {
 			statement.setString(1, usuarioID);
 		
 			resultado = statement.executeQuery();
-			
-			if(resultado != null && resultado.next())return true;
-			else return false;
+
+			return resultado != null && resultado.next();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -60,48 +59,48 @@ public class AlunoDAO {
 	}
 	
 	public static ArrayList<UsuarioModel> selecionarAlunos(){
-		
+
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
-		
-		ArrayList<UsuarioModel> alunos = new ArrayList<UsuarioModel>();
-		
+		ResultSet resultado;
+
+		ArrayList<UsuarioModel> alunos = new ArrayList<>();
+
 		String usuarioID, email, cursoID;
 		UsuarioModel usuario;
-		
+
 		try {
-			
+
 			String query = "select * from aluno";
-			
+
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 
 			resultado = statement.executeQuery();
-			
+
 			while(resultado != null && resultado.next()){
 				usuarioID = resultado.getString("usuario_id");
 				email = resultado.getString("email");
 				cursoID = resultado.getString("curso_id");
-				
+
 				usuario = UsuarioDAO.selecionaUsuario(usuarioID);
-				
-				alunos.add(new AlunoModel(usuario.getNome(), usuario.getProntuario(), usuario.getSenha(),  
+
+				alunos.add(new AlunoModel(usuario.getNome(), usuario.getProntuario(), usuario.getSenha(),
 						email, CursoDAO.selecionarCurso(cursoID)));
 			}
-			
+
 			statement.close();
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return alunos;
-		
+
 	}
 	
 	public static AlunoModel selecionarAluno(String usuarioID){
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		AlunoModel aluno = null;
 		
@@ -140,27 +139,29 @@ public class AlunoDAO {
 	public static ArrayList<UsuarioModel> pesquisarAlunos(String nome){
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
-		ArrayList<UsuarioModel> alunos = new ArrayList<UsuarioModel>();
+		ArrayList<UsuarioModel> alunos = new ArrayList<>();
 		
 		String email, cursoID;
 		UsuarioModel usuario;
+
+		usuario = UsuarioDAO.pesquisarUsuario(nome);
 		
 		try {
 			
-			String query = "select * from aluno where nome like ?";
+			String query = "select * from aluno where usuario_id like ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+
+			statement.setString(1, usuario.getProntuario());
 
 			resultado = statement.executeQuery();
 			
 			while(resultado != null && resultado.next()){
 				email = resultado.getString("email");
 				cursoID = resultado.getString("curso_id");
-				
-				usuario = UsuarioDAO.pesquisarUsuario(nome);
-				
+
 				alunos.add(new AlunoModel(usuario.getNome(), usuario.getProntuario(), usuario.getSenha(),  
 						email, CursoDAO.selecionarCurso(cursoID)));
 			}

@@ -1,7 +1,5 @@
 package model;
 
-import java.util.Scanner;
-
 public class ConteudoModel {
 	
 	private int codigo;
@@ -9,8 +7,6 @@ public class ConteudoModel {
 	private String tipo;
 	private UsuarioModel publicador;
 
-	static Scanner leitura = new Scanner(System.in);
-	
 	public ConteudoModel(String titulo, String tipo, UsuarioModel publicador) {
 		this.titulo = titulo;
 		this.tipo = tipo;
@@ -27,12 +23,15 @@ public class ConteudoModel {
 	public String getTipoConteudo() {
 		return tipo;
 	}
+
 	public void setTipoConteudo(String tipoConteudo) {
 		this.tipo = tipoConteudo;
 	}
+
 	public UsuarioModel getPublicador() {
 		return publicador;
 	}
+
 	public void setPublicador(UsuarioModel publicador) {
 		this.publicador = publicador;
 	}

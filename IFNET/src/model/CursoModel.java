@@ -8,7 +8,7 @@ public class CursoModel {
 	
 	private String nome;
 	private int semestres;
-	private Map<Integer, ArrayList<DisciplinaModel>> disciplinasPorSemestre = new HashMap<Integer, ArrayList<DisciplinaModel>>();
+	private Map<Integer, ArrayList<DisciplinaModel>> disciplinasPorSemestre = new HashMap<>();
 
 	public CursoModel(String nome) {
 		this.nome = nome;
@@ -50,13 +50,13 @@ public class CursoModel {
 	
 	public void criarMapa(int semestres) {
 		for(int semestre = 1; semestre <= semestres; semestre++) {
-			this.disciplinasPorSemestre.put(semestre, new ArrayList<DisciplinaModel>());
+			this.disciplinasPorSemestre.put(semestre, new ArrayList<>());
 		}
 	}
 
 	public static ArrayList<CursoModel> pesquisaCurso(ArrayList<CursoModel> cursos, String nome) {
 		
-		ArrayList<CursoModel> cursosPesquisados = new ArrayList<CursoModel>();
+		ArrayList<CursoModel> cursosPesquisados = new ArrayList<>();
 		
 		for(CursoModel curso:cursos) {
 			if(curso.getNome().toLowerCase().contains(nome.toLowerCase())) 

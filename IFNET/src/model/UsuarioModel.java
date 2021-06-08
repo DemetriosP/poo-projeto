@@ -59,7 +59,7 @@ public class UsuarioModel {
 	
 	public static ArrayList<UsuarioModel> pesquisarUsuario(ArrayList<UsuarioModel> usuarios, String nome) {
 	
-		ArrayList<UsuarioModel> usuariosPesquisados = new ArrayList<UsuarioModel>();
+		ArrayList<UsuarioModel> usuariosPesquisados = new ArrayList<>();
 		
 		for(UsuarioModel usuario:usuarios) 
 			if(usuario.getNome().toLowerCase().contains(nome.toLowerCase())) 
@@ -71,9 +71,8 @@ public class UsuarioModel {
 	@Override 
 	public boolean equals(Object usuario) {
 		
-		if(this.nome == ((UsuarioModel) usuario).getNome())
-			if(this.prontuario == ((UsuarioModel) usuario).getProntuario())
-				return true;
+		if(this.nome.equals(((UsuarioModel) usuario).getNome()))
+			return this.prontuario.equals(((UsuarioModel) usuario).getProntuario());
 		return false;
 		
 	}

@@ -38,7 +38,7 @@ public class ProfessorDAO {
 	public static boolean eProfessor(String usuarioID) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		try {
 			
@@ -49,9 +49,8 @@ public class ProfessorDAO {
 			statement.setString(1, usuarioID);
 		
 			resultado = statement.executeQuery();
-			
-			if(resultado != null && resultado.next())return true;
-			else return false;
+
+			return resultado != null && resultado.next();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -64,9 +63,9 @@ public class ProfessorDAO {
 	public static ArrayList<UsuarioModel> selecionarProfessores(){
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
-		ArrayList<UsuarioModel> professor = new ArrayList<UsuarioModel>();
+		ArrayList<UsuarioModel> professor = new ArrayList<>();
 		
 		String usuarioID, areaID, disciplinaID;
 		UsuarioModel usuario;
@@ -103,7 +102,7 @@ public class ProfessorDAO {
 	public static ProfessorModel selecionarProfessor(String usuarioID){
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		ProfessorModel professor = null;
 		
@@ -143,29 +142,29 @@ public class ProfessorDAO {
 	public static ArrayList<UsuarioModel> pesquisarProfessores(String nome){
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
-		ArrayList<UsuarioModel> professor = new ArrayList<UsuarioModel>();
+		ArrayList<UsuarioModel> professor = new ArrayList<>();
 		
 		String areaID, disciplinaID;
 		UsuarioModel usuario;
+
+		usuario = UsuarioDAO.pesquisarUsuario(nome);
 		
 		try {
 			
-			String query = "select * from professor where nome like ?";
+			String query = "select * from professor where usuario_id like ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
-			statement.setString(1, "%nome%");
+			statement.setString(1, usuario.getProntuario());
 
 			resultado = statement.executeQuery();
 			
 			while(resultado != null && resultado.next()){
 				areaID = resultado.getString("area_id");
 				disciplinaID = resultado.getString("disciplina_id");
-				
-				usuario = UsuarioDAO.pesquisarUsuario(nome);
-				
+
 				professor.add(new ProfessorModel(usuario.getNome(), usuario.getProntuario() ,usuario.getSenha(), 
 						new AreaModel(areaID), new DisciplinaModel(disciplinaID)));
 			}

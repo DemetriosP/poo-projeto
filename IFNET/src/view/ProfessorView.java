@@ -1,7 +1,5 @@
 package view;
 
-import java.util.Scanner;
-
 import dao.AreaDAO;
 import dao.DisciplinaDAO;
 import model.AreaModel;
@@ -10,8 +8,6 @@ import model.ProfessorModel;
 import model.UsuarioModel;
 
 public class ProfessorView {
-	
-	static Scanner leitura = new Scanner(System.in);
 	
 	public ProfessorModel cadastrar() {
 		

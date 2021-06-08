@@ -32,7 +32,7 @@ public class UsuarioDAO {
 	public static UsuarioModel selecionaUsuario(String usuarioID) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		String nome = null, senha = null;
 		
@@ -63,7 +63,7 @@ public class UsuarioDAO {
 	public static UsuarioModel pesquisarUsuario(String nome) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		String usuarioID = null, senha = null;
 		
@@ -94,7 +94,7 @@ public class UsuarioDAO {
 	public static boolean usuarioExiste(String prontuario) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		try {
 			
@@ -105,9 +105,8 @@ public class UsuarioDAO {
 			statement.setString(1, prontuario);
 		
 			resultado = statement.executeQuery();
-			
-			if(resultado != null && resultado.next())return true;
-			else return false;
+
+			return resultado != null && resultado.next();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -120,7 +119,7 @@ public class UsuarioDAO {
 	public static boolean loginUsuario(UsuarioModel usuario) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		try {
 			
@@ -132,9 +131,8 @@ public class UsuarioDAO {
 			statement.setString(2, usuario.getSenha());
 		
 			resultado = statement.executeQuery();
-			
-			if(resultado != null && resultado.next())return true;
-			else return false;
+
+			return resultado != null && resultado.next();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -72,21 +72,19 @@ public class CursoView {
 			
 			do {
 				
-				System.out.println("Você tem certeza que deseja excluir o curso? "
-						+ "Essa ação não pode ser desfeita\n1.Sim\n2.Não");
+				System.out.println("""
+						Você tem certeza que deseja excluir o curso? Essa ação não pode ser desfeita
+						1.Sim
+						2.Não""");
 				opcao = leitura.nextLine();
-				
-				switch(opcao) {
-				
-					case "1":
+
+				switch (opcao) {
+					case "1" -> {
 						CursoDAO.excluirCurso(nome);
 						System.out.println("Curso excluído");
-						break;
-					case "2":
-						System.out.println("Curso não excluído");
-						break;
-					default:
-						System.out.println("Opção invàlida");
+					}
+					case "2" -> System.out.println("Curso não excluído");
+					default -> System.out.println("Opção invàlida");
 				}
 			}while(!opcao.equals("1") && !opcao.equals("2"));
 

@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class RelacionamentoModel {
 	
-	private Map<String, ArrayList<UsuarioModel>> grauUsuario = new HashMap<String, ArrayList<UsuarioModel>>();
+	private Map<String, ArrayList<UsuarioModel>> grauUsuario = new HashMap<>();
 	
 	public RelacionamentoModel() {
 		this.criarMapa();
@@ -25,14 +25,14 @@ public class RelacionamentoModel {
 	}
 	
 	private void criarMapa() {
-		this.grauUsuario.put("Conhecidos", new ArrayList<UsuarioModel>());
-		this.grauUsuario.put("Amigos", new ArrayList<UsuarioModel>());
-		this.grauUsuario.put("Amigos Próximos", new ArrayList<UsuarioModel>());
+		this.grauUsuario.put("Conhecidos", new ArrayList<>());
+		this.grauUsuario.put("Amigos", new ArrayList<>());
+		this.grauUsuario.put("Amigos Próximos", new ArrayList<>());
 	}
 	
 	public static boolean relacionarUsuario(UsuarioModel usuarioAtual, UsuarioModel usuarioRelacionar) {
 		
-		RelacionamentoModel relacionar = null;
+		RelacionamentoModel relacionar;
 		ArrayList<UsuarioModel> usuarios;
 		
 		relacionar = usuarioAtual.getRelacionamento();
@@ -61,7 +61,7 @@ public class RelacionamentoModel {
 			usuarios = mapa.getValue();
 			
 			for(UsuarioModel usuario:usuarios) {
-				if(usuario.getProntuario() == prontuario) {
+				if(usuario.getProntuario().equals(prontuario)) {
 					return mapa.getKey();
 				}
 			}

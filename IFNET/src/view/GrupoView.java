@@ -3,12 +3,9 @@ package view;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import com.mysql.cj.ParseInfo;
-
 import dao.DisciplinaDAO;
 import dao.GrupoDAO;
 import excecoes.GrupoInexistenteException;
-import excecoes.OpcaoInexistenteException;
 import model.DisciplinaModel;
 import model.GrupoModel;
 import model.ProfessorModel;
@@ -76,7 +73,7 @@ public class GrupoView {
 				System.out.println("Informe o nome o código do grupo: ");
 				codigo = Integer.parseInt(leitura.nextLine());
 				
-				if(!GrupoDAO.grupoExiste(codigo)) {
+				if(GrupoDAO.grupoExiste(codigo)) {
 					throw new GrupoInexistenteException();
 				}
 				
@@ -107,7 +104,7 @@ public class GrupoView {
 	
 	public static GrupoModel criarGrupo(UsuarioModel usuarioAtual) {
 		
-		String nome, tipo;
+		String nome, tipo = null, opcao;
 		
 		DisciplinaModel disciplina;
 		
@@ -119,20 +116,15 @@ public class GrupoView {
 		do {
 			
 			System.out.println("Tipo do grupo\n1. Pesquisa\n2. Trabalho");
-			tipo = leitura.nextLine();
-			
-			switch (tipo) {
-				case "1":
-					tipo = "Pesquisa";
-					break;
-				case "2":
-					tipo = "Trabalho";
-					break;
-				default:
-					System.out.println("Opção inválida");
+			opcao = leitura.nextLine();
+
+			switch (opcao) {
+				case "1" -> tipo = "Pesquisa";
+				case "2" -> tipo = "Trabalho";
+				default -> System.out.println("Opção inválida");
 			}
 				
-		}while(!tipo.equals("1") && !tipo.equals("2"));
+		}while(!opcao.equals("1") && !opcao.equals("2"));
 		
 		disciplina = DisciplinaView.escolherDisciplina(DisciplinaDAO.selecionarDisciplinas());
 			
@@ -161,7 +153,7 @@ public class GrupoView {
 					System.out.println("Informe o nome o código do grupo: ");
 					codigo = Integer.parseInt(leitura.nextLine());
 					
-					if(!GrupoDAO.grupoExiste(codigo)) {
+					if(GrupoDAO.grupoExiste(codigo)) {
 						throw new GrupoInexistenteException();
 					}
 					
@@ -179,21 +171,19 @@ public class GrupoView {
 				
 				do {
 					
-					System.out.println("Você tem certeza que deseja excluir o grupo? "
-							+ "Essa ação não pode ser desfeita\n1.Sim\n2.Não");
+					System.out.println("""
+							Você tem certeza que deseja excluir o grupo? Essa ação não pode ser desfeita
+							1.Sim
+							2.Não""");
 					opcao = leitura.nextLine();
-					
-					switch(opcao) {
-					
-						case "1":
+
+					switch (opcao) {
+						case "1" -> {
 							GrupoDAO.excluirGrupo(codigo);
 							System.out.println("Grupo excluído");
-							break;
-						case "2":
-							System.out.println("Grupo não excluído");
-							break;
-						default:
-							System.out.println("Opção invàlida");
+						}
+						case "2" -> System.out.println("Grupo não excluído");
+						default -> System.out.println("Opção invàlida");
 					}
 				}while(!opcao.equals("1") && !opcao.equals("2"));
 				

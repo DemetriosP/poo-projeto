@@ -67,9 +67,9 @@ public class CursoDAO {
 	public static ArrayList<CursoModel> selecionarCursos() {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
-		ArrayList<CursoModel> cursos = new ArrayList<CursoModel>();
+		ArrayList<CursoModel> cursos = new ArrayList<>();
 		
 		CursoModel curso;
 		String cursoID;
@@ -105,7 +105,7 @@ public class CursoDAO {
 	public static CursoModel selecionarCurso(String cursoID) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 	
 		CursoModel curso = null;
 		int semestres;
@@ -140,9 +140,9 @@ public class CursoDAO {
 	private static Map<Integer, ArrayList<DisciplinaModel>> selecionarDisciplinaSemestre(String cursoID){
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
-		Map<Integer, ArrayList<DisciplinaModel>> disciplinasPorSemestre = new HashMap<Integer, ArrayList<DisciplinaModel>>();
+		Map<Integer, ArrayList<DisciplinaModel>> disciplinasPorSemestre = new HashMap<>();
 		
 		String disciplina;
 		int semestre;
@@ -160,13 +160,11 @@ public class CursoDAO {
 			while(resultado != null && resultado.next()){
 				disciplina = resultado.getString("disciplina_id");
 				semestre = resultado.getInt("semestre");
-				
-				if(disciplinasPorSemestre.containsKey(semestre)) {
-					disciplinasPorSemestre.get(semestre).add(new DisciplinaModel(disciplina));
-				}else {
-					disciplinasPorSemestre.put(semestre, new ArrayList<DisciplinaModel>());
-					disciplinasPorSemestre.get(semestre).add(new DisciplinaModel(disciplina));
+
+				if (!disciplinasPorSemestre.containsKey(semestre)) {
+					disciplinasPorSemestre.put(semestre, new ArrayList<>());
 				}
+				disciplinasPorSemestre.get(semestre).add(new DisciplinaModel(disciplina));
 			}
 			
 			statement.close();
@@ -203,7 +201,7 @@ public class CursoDAO {
 	public static boolean contemCurso() {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		try {
 			
@@ -212,9 +210,8 @@ public class CursoDAO {
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
 			resultado = statement.executeQuery();
-			
-			if(resultado != null && resultado.next())return true;
-			else return false;
+
+			return resultado != null && resultado.next();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

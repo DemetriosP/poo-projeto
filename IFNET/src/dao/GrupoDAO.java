@@ -85,7 +85,7 @@ public class GrupoDAO {
 	private static int selecionaGrupoID(GrupoModel grupo) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		int grupoID = 0;
 		
@@ -119,10 +119,10 @@ public class GrupoDAO {
 	public static ArrayList<GrupoModel> selecionaGrupo() {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
-		ArrayList<GrupoModel> grupos = new ArrayList<GrupoModel>();
-		GrupoModel grupo = null;
+		ArrayList<GrupoModel> grupos = new ArrayList<>();
+		GrupoModel grupo;
 		String nome, disciplina, usuario, tipo;
 		int grupoID;
 		
@@ -159,11 +159,11 @@ public class GrupoDAO {
 	private static ArrayList<UsuarioModel> selecionaUsuariosGrupo(int grupoID) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
-		ArrayList<UsuarioModel> usuarios = new ArrayList<UsuarioModel>();
+		ArrayList<UsuarioModel> usuarios = new ArrayList<>();
 		
-		String usuarioID = null;
+		String usuarioID;
 		
 		try {
 			
@@ -197,10 +197,10 @@ public class GrupoDAO {
 	public static ArrayList<GrupoModel> selecionaGrupoPorDisciplina(String disciplinaID) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
-		ArrayList<GrupoModel> grupos = new ArrayList<GrupoModel>();
-		GrupoModel grupo = null;
+		ArrayList<GrupoModel> grupos = new ArrayList<>();
+		GrupoModel grupo;
 		String nome, disciplina, usuario, tipo;
 		int grupoID;
 		
@@ -210,7 +210,7 @@ public class GrupoDAO {
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
-			statement.setString(1, "%disciplinaID%");
+			statement.setString(1, "%" + disciplinaID + "%");
 		
 			resultado = statement.executeQuery();
 			
@@ -238,9 +238,9 @@ public class GrupoDAO {
 	public static ArrayList<String[]> consultarGruposMaisUsuarios() {
 		
 		Conexao conexao = new Conexao();	
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
-		ArrayList<String[]> dados = new ArrayList<String[]>();
+		ArrayList<String[]> dados = new ArrayList<>();
 		
 		int voltas = 0;
 		
@@ -276,7 +276,7 @@ public class GrupoDAO {
 	public static GrupoModel selecionarGrupo(int grupoID) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		GrupoModel grupo = null;
 		String nome, disciplina, usuario, tipo;
@@ -312,7 +312,7 @@ public class GrupoDAO {
 	public static boolean grupoExiste(int grupoID) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		try {
 			
@@ -324,7 +324,7 @@ public class GrupoDAO {
 		
 			resultado = statement.executeQuery();
 			
-			if(resultado != null && resultado.next())return true;
+			if(resultado != null && resultado.next()) return true;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -336,7 +336,7 @@ public class GrupoDAO {
 	public static boolean usuarioPresente(int grupoID, UsuarioModel usuarioAtual) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		try {
 			
@@ -364,7 +364,7 @@ public class GrupoDAO {
 		
 		try {
 			
-			String query = "delete from grupo where codigo like ? and ";
+			String query = "delete from grupo where grupo_id like ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			

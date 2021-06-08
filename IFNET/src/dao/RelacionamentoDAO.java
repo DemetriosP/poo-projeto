@@ -23,8 +23,8 @@ public class RelacionamentoDAO {
 					
 					try {
 						
-						String query = "insert into relacionamento (grau_relacionamento, usuario_relacionamento, "
-								+ "usuario_relacionado) values (?,?,?), values (?,?,?)";
+						String query = "insert into relacionamento (grau_relacionamento, usuario_relaciona, " +
+								"usuario_relacionado) values (?,?,?), (?,?,?);";
 						
 						PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 						
@@ -52,7 +52,7 @@ public class RelacionamentoDAO {
 	public static RelacionamentoModel selecionarRelacionamento(UsuarioModel usuario){
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		RelacionamentoModel relacionamento = new RelacionamentoModel();
 		String usuarioRelacionado, grauRelacionamento;
@@ -60,7 +60,7 @@ public class RelacionamentoDAO {
 		
 		try {
 			
-			String query = "select grau_relacionamento, usuario_relacionado from realcionamento where usuario_relaciona like ?";
+			String query = "select grau_relacionamento, usuario_relacionado from relacionamento where usuario_relaciona like ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
@@ -95,11 +95,11 @@ public class RelacionamentoDAO {
 	public static boolean eRelacionado(String usuarioRelaciona, String usuarioRelacionado) {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		try {
 			
-			String query = "select * from relacionamento where like ?";
+			String query = "select * from relacionamento where usuario_relaciona like ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
@@ -109,7 +109,7 @@ public class RelacionamentoDAO {
 			
 			while(resultado != null && resultado.next()) {
 				
-				if(resultado.getString("usuario_relacionado") == usuarioRelacionado) {
+				if(resultado.getString("usuario_relacionado").equals(usuarioRelacionado)) {
 					return true;
 				}
 			}
@@ -172,9 +172,9 @@ public class RelacionamentoDAO {
 	public static ArrayList<String[]> usuariosMaisRelacionados() {
 		
 		Conexao conexao = new Conexao();	
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
-		ArrayList<String[]> dados = new ArrayList<String[]>();
+		ArrayList<String[]> dados = new ArrayList<>();
 		
 		int voltas = 0;
 		

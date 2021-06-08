@@ -82,21 +82,19 @@ static Scanner leitura = new Scanner(System.in);
 			nome = leitura.nextLine();
 			
 			do {
-				System.out.println("Você tem certeza que deseja excluir a disciplina? "
-						+ "Essa ação não pode ser desfeita\n1.Sim\n2.Não");
+				System.out.println("""
+						Você tem certeza que deseja excluir a disciplina? Essa ação não pode ser desfeita
+						1.Sim
+						2.Não""");
 				opcao = leitura.nextLine();
-				
-				switch(opcao) {
-				
-					case "1":
+
+				switch (opcao) {
+					case "1" -> {
 						DisciplinaDAO.excluirDisciplina(nome);
 						System.out.println("Disciplina excluído");
-						break;
-					case "2":
-						System.out.println("Disciplina não excluído");
-						break;
-					default:
-						System.out.println("Opção invàlida");
+					}
+					case "2" -> System.out.println("Disciplina não excluído");
+					default -> System.out.println("Opção invàlida");
 				}
 			}while(!opcao.equals("1") && !opcao.equals("2"));
 				

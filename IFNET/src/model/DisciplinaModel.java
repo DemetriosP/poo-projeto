@@ -20,7 +20,7 @@ public class DisciplinaModel {
 
 	public static ArrayList<DisciplinaModel> pesquisarDisciplinas(ArrayList<DisciplinaModel> disciplinas, String nome) {
 	
-		ArrayList<DisciplinaModel> disciplinaPesquisada = new ArrayList<DisciplinaModel>();
+		ArrayList<DisciplinaModel> disciplinaPesquisada = new ArrayList<>();
 		
 		for(DisciplinaModel disciplina:disciplinas) 
 			if(disciplina.getNome().toLowerCase().contains(nome.toLowerCase())) 

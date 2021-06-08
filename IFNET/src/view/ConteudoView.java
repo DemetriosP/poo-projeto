@@ -46,25 +46,23 @@ public class ConteudoView {
 		System.out.println("Infome o codigo do contéudo");
 		codigo = Integer.parseInt(leitura.nextLine());
 		
-		if(ConteudoDAO.selecionarConteudo(codigo) == usuarioAtual.getProntuario()) {
+		if(ConteudoDAO.selecionarConteudo(codigo).equals(usuarioAtual.getProntuario())) {
 			
 			do {
 				
-				System.out.println("Você tem certeza que deseja excluir o conteúdo? "
-						+ "Essa ação não pode ser desfeita\n1.Sim\n2.Não");
+				System.out.println("""
+						Você tem certeza que deseja excluir o conteúdo? Essa ação não pode ser desfeita
+						1.Sim
+						2.Não""");
 				opcao = leitura.nextLine();
-				
-				switch(opcao) {
-				
-					case "1":
+
+				switch (opcao) {
+					case "1" -> {
 						ConteudoDAO.excluirConteudo(codigo);
 						System.out.println("Conteúdo excluído");
-						break;
-					case "2":
-						System.out.println("Conteúdo não excluído");
-						break;
-					default:
-						System.out.println("Opção invàlida");
+					}
+					case "2" -> System.out.println("Conteúdo não excluído");
+					default -> System.out.println("Opção invàlida");
 				}
 			}while(!opcao.equals("1") && !opcao.equals("2"));
 			

@@ -11,7 +11,7 @@ public class GrupoModel {
 	private int codigo;
 	private String nome;
 	private DisciplinaModel disciplina;
-	private ArrayList<UsuarioModel> usuariosGrupo = new ArrayList<UsuarioModel>();
+	private ArrayList<UsuarioModel> usuariosGrupo = new ArrayList<>();
 	private ProfessorModel criador;
 	private String tipo;
 	
@@ -77,44 +77,6 @@ public class GrupoModel {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
-	}
-	
-	public static Map<Integer, Integer> consultarGrupoMaisUsuarios(ArrayList<GrupoModel> grupos) {
-		
-		Map<Integer,Integer> maisUsuarios = new HashMap<Integer, Integer>();
-		
-		for(GrupoModel grupo:grupos) {
-			maisUsuarios.put(grupos.indexOf(grupo), grupo.getUsuariosGrupo().size());
-		}
-		
-		Map<Integer, Integer> maisUsuariosOrdenado = maisUsuarios.entrySet().stream().sorted((e1,e2)->
-        e2.getValue().compareTo(e1.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-		
-		return maisUsuariosOrdenado;
-	}
-	
-	public static ArrayList<GrupoModel> consultarGpPesquisaPorDisciplina(ArrayList<GrupoModel> grupos, DisciplinaModel disciplina) {
-		
-		ArrayList<GrupoModel> gruposPesquisados = new ArrayList<GrupoModel>();
-		
-		for(GrupoModel grupo:grupos) {
-			if(grupo.getDisciplina().getNome().contains(disciplina.getNome()) && grupo.getTipo().equals("Pesquisa")) 
-				gruposPesquisados.add(grupo);
-		}
-		
-		return gruposPesquisados;
-	}
-	
-	public static ArrayList<GrupoModel> pesquisarGrupos(ArrayList<GrupoModel> grupos, String nome) {
-		
-		ArrayList<GrupoModel> gruposPesquisados = new ArrayList<GrupoModel>();
-		
-		for(GrupoModel grupo:grupos) 
-			if(grupo.getNome().toLowerCase().contains(nome.toLowerCase())) 
-				gruposPesquisados.add(grupo);
-		
-		return gruposPesquisados;
-		
 	}
 
 	@Override

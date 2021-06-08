@@ -15,7 +15,7 @@ public class UsuarioView {
 	
 	public static UsuarioModel cadastrar() {
 		
-		String prontuario = "", nome = "", senha = "";
+		String prontuario, nome, senha;
 		
 		System.out.println("Cadastre-se");
 		
@@ -111,24 +111,21 @@ public class UsuarioView {
 		
 		do {
 			
-			System.out.println("Você tem certeza que deseja excluir a sua conta? "
-					+ "Essa ação não pode ser desfeita\n1.Sim\n2.Não");
+			System.out.println("""
+					Você tem certeza que deseja excluir a sua conta? Essa ação não pode ser desfeita
+					1.Sim
+					2.Não""");
 			opcao = leitura.nextLine();
-			
-			switch(opcao) {
-			
-				case "1":
-					if(AlunoDAO.eAluno(usuarioAtual.getProntuario())) AlunoDAO.excluirAluno(usuarioAtual);
+
+			switch (opcao) {
+				case "1" -> {
+					if (AlunoDAO.eAluno(usuarioAtual.getProntuario())) AlunoDAO.excluirAluno(usuarioAtual);
 					else ProfessorDAO.excluirProfessor(usuarioAtual);
 					excluido = true;
 					System.out.println("Conta excluída");
-					break;
-				case "2":
-					excluido = false;
-					System.out.println("Conta não excluída");
-					break;
-				default:
-					System.out.println("Opção invàlida");
+				}
+				case "2" -> System.out.println("Conta não excluída");
+				default -> System.out.println("Opção invàlida");
 			}
 			
 		}while(!opcao.equals("1") && !opcao.equals("2"));

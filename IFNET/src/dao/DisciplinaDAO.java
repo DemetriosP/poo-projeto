@@ -31,9 +31,9 @@ public class DisciplinaDAO {
 	public static ArrayList<DisciplinaModel> selecionarDisciplinas() {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
-		ArrayList<DisciplinaModel> disciplinas = new ArrayList<DisciplinaModel>();
+		ArrayList<DisciplinaModel> disciplinas = new ArrayList<>();
 		
 		String disciplina;
 		
@@ -85,7 +85,7 @@ public class DisciplinaDAO {
 	public static boolean contemDisciplina() {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
 		try {
 			
@@ -94,9 +94,8 @@ public class DisciplinaDAO {
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
 			resultado = statement.executeQuery();
-			
-			if(resultado != null && resultado.next())return true;
-			else return false;
+
+			return resultado != null && resultado.next();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

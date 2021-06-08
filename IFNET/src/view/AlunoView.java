@@ -3,8 +3,6 @@ package view;
 import java.util.Scanner;
 
 import dao.CursoDAO;
-import dao.UsuarioDAO;
-import excecoes.UsuarioCadastradoException;
 import model.AlunoModel;
 import model.CursoModel;
 import model.UsuarioModel;

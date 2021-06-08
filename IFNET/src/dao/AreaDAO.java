@@ -31,9 +31,9 @@ public class AreaDAO {
 	public static ArrayList<AreaModel> selecionarAreas() {
 		
 		Conexao conexao = new Conexao();
-		ResultSet resultado = null;
+		ResultSet resultado;
 		
-		ArrayList<AreaModel> areas = new ArrayList<AreaModel>();
+		ArrayList<AreaModel> areas = new ArrayList<>();
 		
 		String area;
 		

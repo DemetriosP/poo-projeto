@@ -18,80 +18,78 @@ public class RelacionamentoView {
 	
 	static Scanner leitura = new Scanner(System.in);
 	
-	public static void relacionarUsuario(UsuarioModel usuarioAtual) {
+	public static UsuarioModel relacionarUsuario(UsuarioModel usuarioAtual) {
 		
 		String nome, prontuario;
 		
 		System.out.println("Infome o nome do usuário: ");
 		nome = leitura.nextLine();
 		
-		UsuarioView.exibirUsuarios(AlunoDAO.pesquisarAlunos(nome), usuarioAtual);
-		UsuarioView.exibirUsuarios(ProfessorDAO.pesquisarProfessores(nome), usuarioAtual);
+		UsuarioView.exibirUsuarios(UsuarioDAO.pesquisarUsuario(nome), usuarioAtual);
 		
-		System.out.println("Informe o prontuario do usuário: ");
-		prontuario = leitura.nextLine();
-		
-		if(RelacionamentoDAO.eRelacionado(nome, prontuario)) {
-			System.out.println("O usuário atual e o usuário informado já estão relacionados");
-		}else {
-			RelacionamentoModel.relacionarUsuario(usuarioAtual, UsuarioDAO.selecionaUsuario(prontuario));
-			RelacionamentoDAO.inserirRelacionamento(usuarioAtual);
-			System.out.println("O relacionamento foi criado");
+		try {
+			
+			System.out.println("Informe o prontuario do usuário: ");
+			prontuario = leitura.nextLine().toUpperCase();
+			
+			if(!UsuarioDAO.usuarioExiste(prontuario)) {
+				throw new OpcaoInexistenteException();
+			}
+			
+			if(RelacionamentoDAO.eRelacionado(usuarioAtual.getProntuario(), prontuario)) 
+				System.out.println("O usuário atual e o usuário informado já estão relacionados");
+			else return UsuarioDAO.selecionaUsuario(prontuario);
+			
+		}catch (OpcaoInexistenteException excecao) {
+			System.out.println(excecao.getMessage());
 		}
 		
+		return null;
 	}
 	
 	public static void alterarGrauRelacionamento(UsuarioModel usuarioAtual) {
-		
-		boolean prosseguir = false;
 
 		int novoGrau;
 
-		String prontuario, grauAtual = null;
+		String prontuario, grauAtual;
 		String[] grauConf = {"Conhecidos", "Amigos", "Melhores Amigos"};
-
-		usuarioAtual.setRelacionamento(RelacionamentoDAO.selecionarRelacionamento(usuarioAtual));
 		
-		exibirRelacionamentos(usuarioAtual);
+		try {
 		
-		System.out.println("Informe o prontuario do usuário que deseja alterar o grau de confiabilidade: ");
-		prontuario = leitura.nextLine();
+			System.out.println("Informe o prontuario do usuário que deseja alterar o grau de confiabilidade: ");
+			prontuario = leitura.nextLine().toUpperCase();
 		
-		do{
-
-			try {
-				
-				grauAtual = RelacionamentoModel.getGrauRelacionamento(usuarioAtual, prontuario);
-				
-				System.out.println("Grau de Confiabilidade Atual: " + grauAtual);
-				
-				System.out.println("Graus de confiabilidade\n0.Conhecidos\n1.Amigos\n2.Amigos Próximos");
-				
-				System.out.print("Informe o número do grau de confiabilidade para o qual a relação será alterada: ");
-				novoGrau = Integer.parseInt(leitura.nextLine());
-
-				if(grauAtual.equals(grauConf[novoGrau])) {
-					throw new GrauConfiabilidadeAtualException();
-				}
-
-				if(novoGrau < 0 || novoGrau > 2) {
-					throw new OpcaoInexistenteException();
-				}
-
-				prosseguir = true;
-				
-			} catch (NumberFormatException excecao) {
-				System.out.println("O valor informado não é um número inteiro");
-			} catch (GrauConfiabilidadeAtualException | OpcaoInexistenteException excecao) {
-				System.out.println(excecao.getMessage());
+			if(!RelacionamentoDAO.eRelacionado(usuarioAtual.getProntuario(), prontuario)) {
+				throw new UsuarioNaoRelacionadoException();
 			}
+			
+			grauAtual = RelacionamentoModel.getGrauRelacionamento(usuarioAtual, prontuario);
+			
+			System.out.println("Grau de Confiabilidade Atual: " + grauAtual);
+			
+			System.out.println("Graus de confiabilidade\n0.Conhecidos\n1.Amigos\n2.Amigos Próximos");
+			
+			System.out.print("Informe o número do grau de confiabilidade para o qual a relação será alterada: ");
+			novoGrau = Integer.parseInt(leitura.nextLine());
 
-		}while(!prosseguir);
-		
-		RelacionamentoDAO.alterarGrauRelacionamento(grauAtual, usuarioAtual.getProntuario(), prontuario);
-		
-		System.out.println("Grau de Confiabilidade Alterado");
-		
+			if(novoGrau < 0 || novoGrau > 2) {
+				throw new OpcaoInexistenteException();
+			}
+			
+			if(grauAtual.equals(grauConf[novoGrau])) {
+				throw new GrauConfiabilidadeAtualException();
+			}
+			
+			RelacionamentoDAO.alterarGrauRelacionamento(grauAtual, usuarioAtual.getProntuario(), prontuario);
+			
+			System.out.println("Grau de Confiabilidade Alterado");
+			
+		} catch (NumberFormatException excecao) {
+			System.out.println("O valor informado não é um número inteiro");
+		} catch (GrauConfiabilidadeAtualException | OpcaoInexistenteException | UsuarioNaoRelacionadoException excecao) {
+			System.out.println(excecao.getMessage());
+		}
+
 	}
 	
 	public static void exibirRelacionamentos(UsuarioModel usuarioAtual) {
@@ -105,44 +103,35 @@ public class RelacionamentoView {
 	
 	public static void excluirRelacionamento(UsuarioModel usuarioAtual) {
 		
-		String prontuario, opcao = "";
+		String prontuario;
+		int opcao = 0;
 		
-		usuarioAtual.setRelacionamento(RelacionamentoDAO.selecionarRelacionamento(usuarioAtual));
-		
-		exibirRelacionamentos(usuarioAtual);
-		
-		do {
+		try {
 
-			try {
+			System.out.println("Informe o prontuario do usuário que deseja excluir o relacionamento: ");
+			prontuario = leitura.nextLine();
 
-				System.out.println("Informe o prontuario do usuário que deseja excluir o relacionamento: ");
-				prontuario = leitura.nextLine();
-
-				if(RelacionamentoDAO.eRelacionado(usuarioAtual.getProntuario(), prontuario)) {
-					throw new UsuarioNaoRelacionadoException();
-				}
-
-				System.out.println("""
-						Você tem certeza que deseja excluir o relacionamento?\s
-						1.Sim
-						2.Não""");
-				opcao = leitura.nextLine();
-
-				switch (opcao) {
-					case "1" -> {
-						RelacionamentoDAO.excluirRelacionamento(usuarioAtual.getProntuario(), prontuario);
-						System.out.println("Relacionamento excluído");
-					}
-					case "2" -> System.out.println("Relacionamento não excluído");
-					default -> System.out.println("Opção invàlida");
-				}
-
-			}catch (UsuarioNaoRelacionadoException excecao) {
-				System.out.println(excecao.getMessage());
+			if(!RelacionamentoDAO.eRelacionado(usuarioAtual.getProntuario(), prontuario)) {
+				throw new UsuarioNaoRelacionadoException();
 			}
 
-		}while(!opcao.equals("1") && !opcao.equals("2"));
-		
+			System.out.println("""
+					Você tem certeza que deseja excluir o relacionamento?\s
+					1.Sim
+					2.Não""");
+			opcao = Integer.parseInt(leitura.nextLine());
+			
+			if(opcao <= 0 || opcao > 2) {
+				throw new OpcaoInexistenteException();
+			} else if (opcao == 1) {
+				RelacionamentoDAO.excluirRelacionamento(usuarioAtual.getProntuario(), prontuario);
+				System.out.println("Relacionamento excluído");
+			} else System.out.println("Relacionamento não excluído");
+
+		}catch (UsuarioNaoRelacionadoException | OpcaoInexistenteException excecao) {
+			System.out.println(excecao.getMessage());
+		}
+
 	}
 	
 	public static void usuarioMaisRelacionados() {

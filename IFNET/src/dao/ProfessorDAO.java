@@ -111,7 +111,7 @@ public class ProfessorDAO {
 		
 		try {
 			
-			String query = "select area_id, disciplina_id from professor where usuario_id like ?";
+			String query = "select * from professor where usuario_id like ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
@@ -127,46 +127,6 @@ public class ProfessorDAO {
 				
 				professor = new ProfessorModel(usuario.getNome(), usuario.getProntuario() ,usuario.getSenha(), 
 						new AreaModel(areaID), new DisciplinaModel(disciplinaID));
-			}
-			
-			statement.close();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return professor;
-		
-	}
-	
-	public static ArrayList<UsuarioModel> pesquisarProfessores(String nome){
-		
-		Conexao conexao = new Conexao();
-		ResultSet resultado;
-		
-		ArrayList<UsuarioModel> professor = new ArrayList<>();
-		
-		String areaID, disciplinaID;
-		UsuarioModel usuario;
-
-		usuario = UsuarioDAO.pesquisarUsuario(nome);
-		
-		try {
-			
-			String query = "select * from professor where usuario_id like ?";
-			
-			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
-			
-			statement.setString(1, usuario.getProntuario());
-
-			resultado = statement.executeQuery();
-			
-			while(resultado != null && resultado.next()){
-				areaID = resultado.getString("area_id");
-				disciplinaID = resultado.getString("disciplina_id");
-
-				professor.add(new ProfessorModel(usuario.getNome(), usuario.getProntuario() ,usuario.getSenha(), 
-						new AreaModel(areaID), new DisciplinaModel(disciplinaID)));
 			}
 			
 			statement.close();

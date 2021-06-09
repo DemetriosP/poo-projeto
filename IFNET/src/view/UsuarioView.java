@@ -71,7 +71,7 @@ public class UsuarioView {
 				
 		for(UsuarioModel usuario:usuarios) {
 			if(usuarios.indexOf(usuario) != usuarios.indexOf(usuarioAtual)){
-				System.out.println(usuario.getNome());
+				System.out.println(usuario);
 			}
 		}
 			

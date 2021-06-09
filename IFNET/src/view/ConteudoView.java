@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import dao.ConteudoDAO;
+import excecoes.GrauConfiabilidadeAtualException;
+import excecoes.OpcaoInexistenteException;
 import model.ConteudoModel;
 import model.UsuarioModel;
 
@@ -16,7 +18,7 @@ public class ConteudoView {
 		System.out.println("Conteúdos");
 		
 		for(ConteudoModel conteudo:conteudos) {
-			System.out.println(conteudo.getTitulo());
+			System.out.println(conteudo);
 		}
 			
 	}
@@ -41,37 +43,39 @@ public class ConteudoView {
 		int codigo;
 		String opcao;
 		
-		exibirConteudo(conteudos);
-		
-		System.out.println("Infome o codigo do contéudo");
-		codigo = Integer.parseInt(leitura.nextLine());
-		
-		if(ConteudoDAO.selecionarConteudo(codigo).equals(usuarioAtual.getProntuario())) {
+		try {
 			
-			do {
-				
-				System.out.println("""
-						Você tem certeza que deseja excluir o conteúdo? Essa ação não pode ser desfeita
-						1.Sim
-						2.Não""");
-				opcao = leitura.nextLine();
+			System.out.println("Infome o codigo do contéudo");
+			codigo = Integer.parseInt(leitura.nextLine());
+			
+			if(ConteudoDAO.selecionarConteudo(codigo) == null) {
+				throw new OpcaoInexistenteException();
+			}
+			
+			if(ConteudoDAO.selecionarConteudo(codigo).equals(usuarioAtual.getProntuario())) {
+				do {
+					System.out.println("""
+							Você tem certeza que deseja excluir o conteúdo? Essa ação não pode ser desfeita
+							1.Sim
+							2.Não""");
+					opcao = leitura.nextLine();
 
-				switch (opcao) {
-					case "1" -> {
-						ConteudoDAO.excluirConteudo(codigo);
-						System.out.println("Conteúdo excluído");
+					switch (opcao) {
+						case "1" -> {
+							ConteudoDAO.excluirConteudo(codigo);
+							System.out.println("Conteúdo excluído");
+						}
+						case "2" -> System.out.println("Conteúdo não excluído");
+						default -> System.out.println("Opção invàlida");
 					}
-					case "2" -> System.out.println("Conteúdo não excluído");
-					default -> System.out.println("Opção invàlida");
-				}
-			}while(!opcao.equals("1") && !opcao.equals("2"));
+				}while(!opcao.equals("1") && !opcao.equals("2"));
+				
+			}else System.out.println("Você não tem permissão para excluir este conteúdo, "
+					+ "somente o criador do conteúdo pode excluí-lo");
 			
-		}else {
-			System.out.println("Você não tem permissão para excluir este conteúdo, somente o criador do conteúdo pode excluí-lo");
-		}
-		
+		}catch (OpcaoInexistenteException excecao) {
+			System.out.println(excecao.getMessage());
+		} 
 	}
 	
-	
-
 }

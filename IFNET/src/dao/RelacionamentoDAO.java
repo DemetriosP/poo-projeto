@@ -19,7 +19,7 @@ public class RelacionamentoDAO {
 		
 			for(UsuarioModel usuarios:mapa.getValue()) {
 				
-				if(eRelacionado(usuario.getProntuario(), usuarios.getProntuario())) {
+				if(!eRelacionado(usuario.getProntuario(), usuarios.getProntuario())) {
 					
 					try {
 						
@@ -99,21 +99,16 @@ public class RelacionamentoDAO {
 		
 		try {
 			
-			String query = "select * from relacionamento where usuario_relaciona like ?";
+			String query = "select * from relacionamento where usuario_relaciona like ? and usuario_relacionado like ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
 			statement.setString(1, usuarioRelaciona);
+			statement.setString(2, usuarioRelacionado);
 		
 			resultado = statement.executeQuery();
 			
-			while(resultado != null && resultado.next()) {
-				
-				if(resultado.getString("usuario_relacionado").equals(usuarioRelacionado)) {
-					return true;
-				}
-			}
-			
+			if(resultado != null && resultado.next()) return true;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -144,6 +144,7 @@ public class GrupoDAO {
 				grupo = new GrupoModel(nome, new DisciplinaModel(disciplina), ProfessorDAO.selecionarProfessor(usuario), tipo);
 				grupo.setCodigo(grupoID);
 				grupo.setUsuariosGrupo(selecionaUsuariosGrupo(grupoID));
+				grupos.add(grupo);
 				
 			}
 			
@@ -224,6 +225,7 @@ public class GrupoDAO {
 				grupo = new GrupoModel(nome, new DisciplinaModel(disciplina), ProfessorDAO.selecionarProfessor(usuario), tipo);
 				grupo.setCodigo(grupoID);
 				grupo.setUsuariosGrupo(selecionaUsuariosGrupo(grupoID));
+				grupos.add(grupo);
 			}
 			
 			statement.close();

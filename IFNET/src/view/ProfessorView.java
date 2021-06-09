@@ -9,13 +9,11 @@ import model.UsuarioModel;
 
 public class ProfessorView {
 	
-	public ProfessorModel cadastrar() {
+	public static ProfessorModel cadastrar(UsuarioModel usuario) {
 		
 		ProfessorModel professor;
 		AreaModel area;
 		DisciplinaModel disciplina;
-		
-		UsuarioModel usuario = UsuarioView.cadastrar();
 		
 		area = AreaView.escolherArea(AreaDAO.selecionarAreas());
 		

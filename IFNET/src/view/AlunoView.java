@@ -11,15 +11,13 @@ public class AlunoView {
 	
 	static Scanner leitura = new Scanner(System.in);
 
-	public AlunoModel cadastrar() {
+	public static AlunoModel cadastrar(UsuarioModel usuario) {
 		
 		String email;
 		
 		AlunoModel aluno;
 		
 		CursoModel curso;
-		
-		UsuarioModel usuario = UsuarioView.cadastrar();
 			
 		System.out.print("Informe o e-mail: ");
 		email = leitura.nextLine();

@@ -9,9 +9,11 @@ import dao.CursoDAO;
 import dao.DisciplinaDAO;
 import dao.GrupoDAO;
 import dao.ProfessorDAO;
+import dao.RelacionamentoDAO;
 import model.AlunoModel;
 import model.ConteudoModel;
 import model.ProfessorModel;
+import model.RelacionamentoModel;
 import model.UsuarioModel;
 
 public class Principal {
@@ -21,67 +23,70 @@ public class Principal {
 		Scanner leitura = new Scanner(System.in);
 
 		ArrayList<ConteudoModel> conteudos;
-		UsuarioModel usuarioAtual = null;
+		UsuarioModel usuarioAtual = null, usuarioCadastrar = null, usuarioRel = null;
 		boolean comecar = true, sair = true, voltar, entrou = false, cadastro = false;
 		String opcao, titulo;
 
 		while (comecar) {
 
-			do {
+			System.out.println("Bem vindo ao IFNET\n1.Entrar\n2.Criar nova conta\nS.Sair");
+			opcao = leitura.nextLine().toUpperCase();
 
-				System.out.println("Bem vindo ao IFNET\n1.Entrar\n2.Criar nova conta\nS.Sair");
-				opcao = leitura.nextLine().toUpperCase();
+			switch (opcao) {
 
-				switch (opcao) {
+				case "1":
+					usuarioAtual = UsuarioView.login();
 
-					case "1":
-						do {
+					if (usuarioAtual != null) {
 
-							usuarioAtual = UsuarioView.login();
+						entrou = true;
 
-							if (usuarioAtual != null) {
+						if (AlunoDAO.eAluno(usuarioAtual.getProntuario())) {
+							usuarioAtual = AlunoDAO.selecionarAluno(usuarioAtual.getProntuario());
+						} else {
+							usuarioAtual = ProfessorDAO.selecionarProfessor(usuarioAtual.getProntuario());
+						}
+					}
+					break;
+				case "2":
+					
+						System.out.println("Você é Aluno ou Professor?\n1 - Aluno\n2 - Professor");
+						opcao = leitura.nextLine();
 
-								entrou = true;
-
-								if (AlunoDAO.eAluno(usuarioAtual.getProntuario())) {
-									usuarioAtual = AlunoDAO.selecionarAluno(usuarioAtual.getProntuario());
-								} else {
-									usuarioAtual = ProfessorDAO.selecionarProfessor(usuarioAtual.getProntuario());
+						switch (opcao) {
+							case "1" -> {
+								
+								usuarioCadastrar = UsuarioView.cadastrar();
+								
+								if(usuarioCadastrar != null) {
+									usuarioAtual = AlunoView.cadastrar(usuarioCadastrar);
+									AlunoDAO.inserirAluno((AlunoModel) usuarioAtual);
+									entrou = true;
 								}
 							}
-
-						} while (!entrou);
-						break;
-					case "2":
-						do {
-
-							System.out.println("Você é Aluno ou Professor?\n1 - Aluno\n2 - Professor");
-							opcao = leitura.nextLine();
-
-							switch (opcao) {
-								case "1" -> {
-									usuarioAtual = new AlunoView().cadastrar();
-									if (usuarioAtual != null) AlunoDAO.inserirAluno((AlunoModel) usuarioAtual);
-									cadastro = true;
+							case "2" -> {
+								
+								usuarioCadastrar = UsuarioView.cadastrar();
+								
+								if(usuarioCadastrar != null) {
+									usuarioAtual = ProfessorView.cadastrar(usuarioCadastrar);
+									ProfessorDAO.inserirProfessor((ProfessorModel) usuarioAtual);
+									entrou = true;
 								}
-								case "2" -> {
-									usuarioAtual = new ProfessorView().cadastrar();
-									if (usuarioAtual != null) ProfessorDAO.inserirProfessor((ProfessorModel) usuarioAtual);
-									cadastro = true;
-								}
-								default -> System.out.println("Opção inválida");
 							}
+							default -> System.out.println("Opção inválida");
+						}
+					break;
+				case "S":
+					comecar = false;
+					break;
+				default:
+					System.out.println("Opção inválida");
+			}
 
-						} while (!cadastro);
-						break;
-					case "S":
-						comecar = sair = false;
-						break;
-					default:
-						System.out.println("Opção inválida");
-				}
+			if (entrou && usuarioAtual != null) {
 
-				if (entrou && usuarioAtual != null) {
+				do {
 
 					voltar = true;
 
@@ -133,17 +138,44 @@ public class Principal {
 							do {
 
 								System.out.println("""
-										1.Relacionar Usuários
-										2.Alterar grau de confiabilidade
-										3.Excluir Relacionamento
-										4.Consultar usuário com mais relacionamentos
-										V.Voltar""");
+									1.Relacionar Usuários
+									2.Alterar grau de confiabilidade
+									3.Excluir Relacionamento
+									4.Consultar usuário com mais relacionamentos
+									V.Voltar""");
 								opcao = leitura.nextLine().toUpperCase();
 
 								switch (opcao) {
-									case "1" -> RelacionamentoView.relacionarUsuario(usuarioAtual);
-									case "2" -> RelacionamentoView.alterarGrauRelacionamento(usuarioAtual);
-									case "3" -> RelacionamentoView.excluirRelacionamento(usuarioAtual);
+									case "1" -> {
+										
+										usuarioRel = RelacionamentoView.relacionarUsuario(usuarioAtual);
+										
+										if(usuarioRel != null) {
+											RelacionamentoModel.relacionarUsuario(usuarioRel, usuarioAtual);
+											RelacionamentoDAO.inserirRelacionamento(usuarioAtual);
+											System.out.println("O relacionamento foi criado");
+										}
+									}
+									case "2" -> {
+										
+										if(usuarioAtual.getRelacionamento().getGrauUsuario().size() != 0) {
+											usuarioAtual.setRelacionamento(RelacionamentoDAO.selecionarRelacionamento(usuarioAtual));
+											RelacionamentoView.exibirRelacionamentos(usuarioAtual);
+											RelacionamentoView.alterarGrauRelacionamento(usuarioAtual);
+							
+										}else System.out.println("Você não tem nenhum relacionamento.");
+										
+									}
+									case "3" -> {
+										
+										if(usuarioAtual.getRelacionamento().getGrauUsuario().size() != 0) {
+											usuarioAtual.setRelacionamento(RelacionamentoDAO.selecionarRelacionamento(usuarioAtual));
+											RelacionamentoView.exibirRelacionamentos(usuarioAtual);
+											RelacionamentoView.excluirRelacionamento(usuarioAtual);
+							
+										}else System.out.println("Você não tem nenhum relacionamento.");
+										
+									}
 									case "4" -> RelacionamentoView.usuarioMaisRelacionados();
 									case "V" -> voltar = false;
 									default -> System.out.println("Opção inválida");
@@ -156,18 +188,37 @@ public class Principal {
 							do {
 
 								System.out.println("""
-										1.Consultar Grupo de Pesquisa por Disciplina
-										2.Consultar Grupos com Mais Usuarios
-										3.Entrar no Grupo""");
+									1.Consultar Grupo de Pesquisa por Disciplina
+									2.Consultar Grupos com Mais Usuarios
+									3.Entrar no Grupo""");
 								if (usuarioAtual.getClass() == ProfessorModel.class)
 									System.out.println("4.Criar Grupo\n5.Excluir Grupo");
 								System.out.println("V.Volta");
 								opcao = leitura.nextLine().toUpperCase();
 
 								switch (opcao) {
-									case "1" -> GrupoView.consultarGrupoPesqPorDisciplina();
-									case "2" -> GrupoView.consultarGrupoMaisUsuarios();
-									case "3" -> GrupoView.entrarGrupo(usuarioAtual);
+									case "1" -> {
+										
+										if(GrupoDAO.selecionaGrupo().size() > 0) {
+											GrupoView.consultarGrupoPesqPorDisciplina();
+										} else System.out.println("Nenhum grupo foi criado.");
+									} 
+									
+									case "2" -> {
+										
+										if(GrupoDAO.selecionaGrupo().size() > 0) {
+											GrupoView.consultarGrupoMaisUsuarios();
+										} else System.out.println("Nenhum grupo foi criado.");
+									}
+									
+									case "3" -> {
+										
+										if(GrupoDAO.selecionaGrupo().size() > 0) {
+											GrupoView.exibirGrupo(GrupoDAO.selecionaGrupo());
+											GrupoView.entrarGrupo(usuarioAtual);
+										} else System.out.println("Nenhum grupo foi criado.");
+									}
+									
 								}
 
 								if (usuarioAtual.getClass() == ProfessorModel.class) {
@@ -253,20 +304,14 @@ public class Principal {
 					if (usuarioAtual.getClass() == AlunoModel.class && (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") && !opcao.equals("4") && !opcao.equals("5") && !opcao.equals("6") && !opcao.equals("V")) ||
 							usuarioAtual.getClass() == ProfessorModel.class && (!opcao.equals("1") && !opcao.equals("2") && !opcao.equals("3") && !opcao.equals("4")) && !opcao.equals("V")) {
 						if ("S".equals(opcao)) {
-							sair = false;
-							entrou = false;
+							sair = entrou = false;
 							usuarioAtual = null;
 						} else {
 							System.out.println("Opção inválida");
 						}
 					}
-
-				}
-
-			} while (sair);
+				}while(sair);
+			}
 		}
 	}
-
 }
-
-

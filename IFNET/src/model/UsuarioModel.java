@@ -79,7 +79,8 @@ public class UsuarioModel {
 
 	@Override
 	public String toString() {
-		return null;
+		return "Nome: " + getNome() + 
+				"\nProntuário: " + getProntuario();
 	}
 
 }

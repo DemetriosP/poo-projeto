@@ -54,13 +54,9 @@ public class RelacionamentoModel {
 	
 	public static String getGrauRelacionamento(UsuarioModel usuarioAtual, String prontuario) {
 		
-		ArrayList<UsuarioModel> usuarios;
-		
 		for (Map.Entry<String , ArrayList<UsuarioModel>> mapa : usuarioAtual.getRelacionamento().grauUsuario.entrySet()) { 
 			
-			usuarios = mapa.getValue();
-			
-			for(UsuarioModel usuario:usuarios) {
+			for(UsuarioModel usuario:mapa.getValue()) {
 				if(usuario.getProntuario().equals(prontuario)) {
 					return mapa.getKey();
 				}

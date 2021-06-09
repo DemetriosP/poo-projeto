@@ -33,8 +33,6 @@ public class GrupoView {
 		
 		System.out.println("Consultar Grupo de Pesquisa por Disciplina");
 		
-		System.out.println("Disciplinas");
-		
 		DisciplinaView.exibirDisciplina(DisciplinaDAO.selecionarDisciplinas());
 		
 		System.out.println("Informe o nome da disciplina: ");
@@ -53,7 +51,7 @@ public class GrupoView {
 		System.out.println("TOP 10 Grupos com mais usuários");
 		
 		for(String[] dado:GrupoDAO.consultarGruposMaisUsuarios()) {
-			System.out.println(GrupoDAO.selecionarGrupo(Integer.parseInt(dado[0])) + "Usuários - " + dado[1]);
+			System.out.println("Nome: " + GrupoDAO.selecionarGrupo(Integer.parseInt(dado[0])).getNome() + " Usuários: " + dado[1]);
 		}
 	
 	}
@@ -62,41 +60,21 @@ public class GrupoView {
 		
 		int codigo = 0;
 		
-		boolean prosseguir = false;
-		
-		do {
-			
-			exibirGrupo(GrupoDAO.selecionaGrupo());
-			
-			try {
-				
-				System.out.println("Informe o nome o código do grupo: ");
-				codigo = Integer.parseInt(leitura.nextLine());
-				
-				if(GrupoDAO.grupoExiste(codigo)) {
-					throw new GrupoInexistenteException();
-				}
-				
-				prosseguir = true;
-				
-			} catch (NumberFormatException excecao) {
-				System.out.println("O valor informado não é um número inteiro");
-			} catch (GrupoInexistenteException excecao) {
-				System.out.println(excecao.getMessage());
-			}
-			
-		}while(!prosseguir);
-		
 		try {
 			
-			if(GrupoDAO.usuarioPresente(codigo, usuarioAtual)) {
+			System.out.println("Informe o código do grupo: ");
+			codigo = Integer.parseInt(leitura.nextLine());
+			
+			if(GrupoDAO.grupoExiste(codigo) || GrupoDAO.usuarioPresente(codigo, usuarioAtual)) {
 				throw new GrupoInexistenteException();
 			}
 			
 			GrupoDAO.inserirUsuariosGrupo(codigo, usuarioAtual);
 			System.out.println("Usuário entrou no grupo.");
 			
-		}catch (GrupoInexistenteException excecao) {
+		} catch (NumberFormatException excecao) {
+			System.out.println("O valor informado não é um número inteiro");
+		} catch (GrupoInexistenteException excecao) {
 			System.out.println(excecao.getMessage());
 		}
 			

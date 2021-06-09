@@ -81,7 +81,8 @@ public class GrupoModel {
 
 	@Override
 	public String toString() {
-		return "Nome: " + this.nome + 
+		return "Código: " + this.codigo + 
+				"\nNome: " + this.nome + 
 				"\nDisciplina: " + this.disciplina.getNome() + 
 				"\nQuantidade de Usuários: " + this.usuariosGrupo.size() + 
 				"\nCriador: " + this.criador.getNome() + 

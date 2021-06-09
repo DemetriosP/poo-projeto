@@ -3,6 +3,7 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import model.UsuarioModel;
 
@@ -60,10 +61,12 @@ public class UsuarioDAO {
 		return new UsuarioModel(nome, usuarioID, senha);
 	}
 	
-	public static UsuarioModel pesquisarUsuario(String nome) {
+	public static ArrayList<UsuarioModel> pesquisarUsuario(String nome) {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado;
+		
+		ArrayList<UsuarioModel> usuarios = new ArrayList<>();
 		
 		String usuarioID = null, senha = null;
 		
@@ -73,13 +76,16 @@ public class UsuarioDAO {
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
-			statement.setString(1, nome);
+			statement.setString(1, "%" + nome + "%");
 
 			resultado = statement.executeQuery();
 			
 			while(resultado != null && resultado.next()){
+				nome = resultado.getString("nome");
 				usuarioID = resultado.getString("usuario_id");
 				senha = resultado.getString("senha");
+				
+				usuarios.add(new UsuarioModel(nome, usuarioID, senha));
 			}
 			
 			statement.close();
@@ -88,7 +94,7 @@ public class UsuarioDAO {
 			e.printStackTrace();
 		}
 		
-		return new UsuarioModel(nome, usuarioID, senha);
+		return usuarios;
 	}
 	
 	public static boolean usuarioExiste(String prontuario) {

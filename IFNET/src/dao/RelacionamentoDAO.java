@@ -96,6 +96,7 @@ public class RelacionamentoDAO {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado;
+		boolean relacionado = false;
 		
 		try {
 			
@@ -108,13 +109,15 @@ public class RelacionamentoDAO {
 		
 			resultado = statement.executeQuery();
 			
-			if(resultado != null && resultado.next()) return true;
+			if(resultado != null && resultado.next()) relacionado = true;
+			
+			statement.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return false;
+		return relacionado;
 	}
 	
 	public static void alterarGrauRelacionamento(String relaciona, String relacionado, String grau) {

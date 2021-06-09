@@ -63,8 +63,6 @@ public class CursoView {
 		
 		String opcao, nome;
 		
-		if(CursoDAO.contemCurso()) {
-			
 			exibirCurso(CursoDAO.selecionarCursos());
 			
 			System.out.println("Informe o nome do curso: ");
@@ -80,15 +78,14 @@ public class CursoView {
 
 				switch (opcao) {
 					case "1" -> {
-						CursoDAO.excluirCurso(nome);
-						System.out.println("Curso excluído");
+						if(CursoDAO.excluirCurso(nome)) System.out.println("Curso excluído");
 					}
 					case "2" -> System.out.println("Curso não excluído");
 					default -> System.out.println("Opção invàlida");
 				}
 			}while(!opcao.equals("1") && !opcao.equals("2"));
 
-		}else System.out.println("Ação negada, não existem cursos cadastrados.");
+		
 		
 	}
 	
@@ -139,7 +136,7 @@ public class CursoView {
 				System.out.println("Informe o semetre da disciplina");
 				semestre = Integer.parseInt(leitura.nextLine());
 
-				if(semestre > semestres || semestre  < 0) {
+				if(semestre > semestres || semestre  <= 0) {
 						throw new OpcaoInexistenteException();
 					}
 

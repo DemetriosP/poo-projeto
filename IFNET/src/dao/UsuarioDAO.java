@@ -101,6 +101,7 @@ public class UsuarioDAO {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado;
+		boolean existe = false;
 		
 		try {
 			
@@ -111,14 +112,16 @@ public class UsuarioDAO {
 			statement.setString(1, prontuario);
 		
 			resultado = statement.executeQuery();
-
-			return resultado != null && resultado.next();
+			
+			if(resultado != null && resultado.next()) existe = true;
+			
+			statement.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return false;
+		return existe;
 		
 	}
 	
@@ -126,6 +129,7 @@ public class UsuarioDAO {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado;
+		boolean login = false;
 		
 		try {
 			
@@ -137,14 +141,16 @@ public class UsuarioDAO {
 			statement.setString(2, usuario.getSenha());
 		
 			resultado = statement.executeQuery();
-
-			return resultado != null && resultado.next();
+			
+			if(resultado != null && resultado.next()) login = true;
+			
+			statement.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return false;
+		return login;
 	}
 	
 	public static void mudarNome(UsuarioModel usuarioAtual, String nome) {

@@ -57,16 +57,16 @@ static Scanner leitura = new Scanner(System.in);
 			
 	}
 	
-	public static void cadastrarDisciplina() {
+	public static DisciplinaModel cadastrarDisciplina() {
 		
 		String nome;
 		
 		System.out.println("Informe O nome da Diciplina que deseja adicionar");
 		nome = leitura.nextLine();
 		
-		DisciplinaDAO.insereDisciplina(new DisciplinaModel(nome));
-		
 		System.out.println("Disciplina cadastrada");
+		
+		return new DisciplinaModel(nome);
 		
 	}
 	
@@ -74,32 +74,27 @@ static Scanner leitura = new Scanner(System.in);
 		
 		String opcao, nome;
 		
-		if(DisciplinaDAO.contemDisciplina()) {
-			
-			exibirDisciplina(disciplinas);
-			
-			System.out.println("Informe o nome da disciplina: ");
-			nome = leitura.nextLine();
-			
-			do {
-				System.out.println("""
-						Você tem certeza que deseja excluir a disciplina? Essa ação não pode ser desfeita
-						1.Sim
-						2.Não""");
-				opcao = leitura.nextLine();
-
-				switch (opcao) {
-					case "1" -> {
-						DisciplinaDAO.excluirDisciplina(nome);
-						System.out.println("Disciplina excluído");
-					}
-					case "2" -> System.out.println("Disciplina não excluído");
-					default -> System.out.println("Opção invàlida");
-				}
-			}while(!opcao.equals("1") && !opcao.equals("2"));
-				
-		}else System.out.println("Ação negada, não existem disciplinas cadastrados.");
+		exibirDisciplina(disciplinas);
 		
+		System.out.println("Informe o nome da disciplina: ");
+		nome = leitura.nextLine();
+		
+		do {
+			System.out.println("""
+					Você tem certeza que deseja excluir a disciplina? Essa ação não pode ser desfeita
+					1.Sim
+					2.Não""");
+			opcao = leitura.nextLine();
+
+			switch (opcao) {
+				case "1" -> {
+					if(DisciplinaDAO.excluirDisciplina(nome)) System.out.println("Disciplina excluído");
+				}
+				case "2" -> System.out.println("Disciplina não excluído");
+				default -> System.out.println("Opção invàlida");
+			}
+		}while(!opcao.equals("1") && !opcao.equals("2"));
+				
 	}
 		
 }

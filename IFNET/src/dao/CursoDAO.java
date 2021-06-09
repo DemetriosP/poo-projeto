@@ -177,13 +177,14 @@ public class CursoDAO {
 	}
 	
 	
-	public static void excluirCurso(String cursoID) {
+	public static boolean excluirCurso(String cursoID) {
 		
-		Conexao conexao = new Conexao();	
+		Conexao conexao = new Conexao();
+		boolean deletado = true;
 		
 		try {
 			
-			String query = "delete from curso where curso_id like ?";
+			String query = "delete from curso where curso_id = ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
@@ -193,31 +194,11 @@ public class CursoDAO {
 			statement.close();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Você não pode excluir esse curso, pois ela tem ligações com outras tabelas.");
+			deletado = false;
 		}
 		
-	}
-	
-	public static boolean contemCurso() {
-		
-		Conexao conexao = new Conexao();
-		ResultSet resultado;
-		
-		try {
-			
-			String query = "select * from curso";
-			
-			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
-			
-			resultado = statement.executeQuery();
-
-			return resultado != null && resultado.next();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return false;
+		return deletado;
 		
 	}
 	

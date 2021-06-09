@@ -24,7 +24,7 @@ public class Principal {
 
 		ArrayList<ConteudoModel> conteudos;
 		UsuarioModel usuarioAtual = null, usuarioCadastrar = null, usuarioRel = null;
-		boolean comecar = true, sair = true, voltar, entrou = false, cadastro = false;
+		boolean comecar = true, sair = true, voltar, entrou = false;
 		String opcao, titulo;
 
 		while (comecar) {
@@ -227,7 +227,12 @@ public class Principal {
 											GrupoDAO.inserirGrupo(GrupoView.criarGrupo(usuarioAtual));
 											System.out.println("Grupo criado!");
 										}
-										case "5" -> GrupoView.excluirGrupo(usuarioAtual);
+										case "5" -> {
+											
+											if(GrupoDAO.selecionaGrupo().size() > 0) {
+												GrupoView.excluirGrupo(usuarioAtual);
+											}else System.out.println("Ação negada, não existem grupos cadastrados.");
+										}
 									}
 								}
 
@@ -274,8 +279,12 @@ public class Principal {
 									opcao = leitura.nextLine().toUpperCase();
 
 									switch (opcao) {
-										case "1" -> DisciplinaView.cadastrarDisciplina();
-										case "2" -> DisciplinaView.excluirDisciplina(DisciplinaDAO.selecionarDisciplinas());
+										case "1" -> DisciplinaDAO.insereDisciplina(DisciplinaView.cadastrarDisciplina());
+										case "2" -> {
+											if(DisciplinaDAO.selecionarDisciplinas().size() > 0) {
+												DisciplinaView.excluirDisciplina(DisciplinaDAO.selecionarDisciplinas());
+											}else System.out.println("Ação negada, não existem disciplinas cadastrados.");
+										}
 										case "V" -> voltar = false;
 										default -> System.out.println("Opção inválida");
 									}
@@ -292,7 +301,11 @@ public class Principal {
 											CursoDAO.inserirCurso(CursoView.cadastrarCurso());
 											System.out.println("Curso cadastrado");
 										}
-										case "2" -> CursoView.excluirCurso();
+										case "2" -> {
+											if(CursoDAO.selecionarCursos().size() > 0) {
+												CursoView.excluirCurso();
+											}else System.out.println("Ação negada, não existem cursos cadastrados.");
+											}
 										case "V" -> voltar = false;
 										default -> System.out.println("Opção inválida");
 									}

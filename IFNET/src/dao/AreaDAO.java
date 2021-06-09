@@ -47,7 +47,7 @@ public class AreaDAO {
 			
 			while(resultado != null && resultado.next()){
 				area = resultado.getString("area_id");
-				
+	
 				areas.add(new AreaModel(area));
 			}
 			

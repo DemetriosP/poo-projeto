@@ -265,7 +265,6 @@ public class GrupoDAO {
 				voltas++;
 			}
 			
-			statement.execute();
 			statement.close();
 			
 		} catch (SQLException e) {
@@ -315,6 +314,7 @@ public class GrupoDAO {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado;
+		boolean existe = false;
 		
 		try {
 			
@@ -326,19 +326,22 @@ public class GrupoDAO {
 		
 			resultado = statement.executeQuery();
 			
-			if(resultado != null && resultado.next()) return true;
+			if(resultado != null && resultado.next()) existe = true;
+			
+			statement.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return false;
+		return existe;
 	}
 	
 	public static boolean usuarioPresente(int grupoID, UsuarioModel usuarioAtual) {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado;
+		boolean presente = false;
 		
 		try {
 			
@@ -351,22 +354,46 @@ public class GrupoDAO {
 		
 			resultado = statement.executeQuery();
 			
-			if(resultado != null && resultado.next())return true;
+			if(resultado != null && resultado.next())presente = true;
+			
+			statement.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return false;	
+		return presente;	
 	}
 	
 	public static void excluirGrupo(int codigo) {
+		
+		Conexao conexao = new Conexao();
+		excluirUsuariosGrupo(codigo);
+		
+		try {
+			
+			String query = "delete from grupo where grupo_id = ?;";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setInt(1, codigo);
+			
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private static void excluirUsuariosGrupo(int codigo) {
 		
 		Conexao conexao = new Conexao();	
 		
 		try {
 			
-			String query = "delete from grupo where grupo_id like ?";
+			String query = "delete from usuarios_grupo where grupo_id = ?;";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			

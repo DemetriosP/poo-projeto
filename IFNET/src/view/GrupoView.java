@@ -6,6 +6,8 @@ import java.util.Scanner;
 import dao.DisciplinaDAO;
 import dao.GrupoDAO;
 import excecoes.GrupoInexistenteException;
+import excecoes.OpcaoInexistenteException;
+import excecoes.UsuarioPresenteException;
 import model.DisciplinaModel;
 import model.GrupoModel;
 import model.ProfessorModel;
@@ -65,8 +67,10 @@ public class GrupoView {
 			System.out.println("Informe o código do grupo: ");
 			codigo = Integer.parseInt(leitura.nextLine());
 			
-			if(GrupoDAO.grupoExiste(codigo) || GrupoDAO.usuarioPresente(codigo, usuarioAtual)) {
-				throw new GrupoInexistenteException();
+			if(!GrupoDAO.grupoExiste(codigo)) {
+				throw new OpcaoInexistenteException();
+			}else if( GrupoDAO.usuarioPresente(codigo, usuarioAtual)) {
+				throw new UsuarioPresenteException();
 			}
 			
 			GrupoDAO.inserirUsuariosGrupo(codigo, usuarioAtual);
@@ -74,7 +78,7 @@ public class GrupoView {
 			
 		} catch (NumberFormatException excecao) {
 			System.out.println("O valor informado não é um número inteiro");
-		} catch (GrupoInexistenteException excecao) {
+		} catch (OpcaoInexistenteException | UsuarioPresenteException excecao ) {
 			System.out.println(excecao.getMessage());
 		}
 			
@@ -116,34 +120,18 @@ public class GrupoView {
 		
 		int codigo = 0;
 		
-		boolean prosseguir = false;
+		System.out.println("Excluir Grupo");
 		
-		if(GrupoDAO.selecionaGrupo().size() > 0) {
+		exibirGrupo(GrupoDAO.selecionaGrupo());
+		
+		try {
 			
-			do {
-				
-				System.out.println("Excluir Grupo");
-				
-				exibirGrupo(GrupoDAO.selecionaGrupo());
-				
-				try {
-					
-					System.out.println("Informe o nome o código do grupo: ");
-					codigo = Integer.parseInt(leitura.nextLine());
-					
-					if(GrupoDAO.grupoExiste(codigo)) {
-						throw new GrupoInexistenteException();
-					}
-					
-					prosseguir = true;
-					
-				} catch (NumberFormatException excecao) {
-					System.out.println("O valor informado não é um número inteiro");
-				} catch (GrupoInexistenteException excecao) {
-					System.out.println(excecao.getMessage());
-				}
-				
-			}while(!prosseguir);
+			System.out.println("Informe o nome o código do grupo: ");
+			codigo = Integer.parseInt(leitura.nextLine());
+			
+			if(!GrupoDAO.grupoExiste(codigo)) {
+				throw new GrupoInexistenteException();
+			}
 			
 			if(GrupoDAO.selecionarGrupo(codigo).getCriador().equals(usuarioAtual)) {
 				
@@ -166,9 +154,12 @@ public class GrupoView {
 				}while(!opcao.equals("1") && !opcao.equals("2"));
 				
 			} else System.out.println("Ação negada, somente o criador do grupo tem permissão para excluí-lo");
-
-		}else System.out.println("Ação negada, não existem grupos cadastrados.");
-		
+			
+		} catch (NumberFormatException excecao) {
+			System.out.println("O valor informado não é um número inteiro");
+		} catch (GrupoInexistenteException excecao) {
+			System.out.println(excecao.getMessage());
+		}	
 	}
 
 }

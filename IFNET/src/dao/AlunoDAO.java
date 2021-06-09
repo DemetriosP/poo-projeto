@@ -37,6 +37,7 @@ public class AlunoDAO {
 		
 		Conexao conexao = new Conexao();
 		ResultSet resultado;
+		boolean aluno = false;
 		
 		try {
 			
@@ -48,13 +49,15 @@ public class AlunoDAO {
 		
 			resultado = statement.executeQuery();
 
-			return resultado != null && resultado.next();
+			if(resultado != null && resultado.next()) aluno = true;
+			
+			statement.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return false;
+		return aluno;
 		
 	}
 	

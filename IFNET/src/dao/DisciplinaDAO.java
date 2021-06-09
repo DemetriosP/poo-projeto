@@ -61,13 +61,14 @@ public class DisciplinaDAO {
 		
 	}
 	
-	public static void excluirDisciplina(String disciplinaID) {
+	public static boolean excluirDisciplina(String disciplinaID) {
 		
-		Conexao conexao = new Conexao();	
+		Conexao conexao = new Conexao();
+		boolean deletado = true;
 		
 		try {
 			
-			String query = "delete from disciplina where disciplina_id like ?";
+			String query = "delete from disciplina where disciplina_id = ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
@@ -77,34 +78,12 @@ public class DisciplinaDAO {
 			statement.close();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Você não pode excluir essa disciplina, pois ela tem ligações com outras tabelas.");
+			deletado = false;
 		}
 		
-	}
-	
-	public static boolean contemDisciplina() {
-		
-		Conexao conexao = new Conexao();
-		ResultSet resultado;
-		
-		try {
-			
-			String query = "select * from disciplina";
-			
-			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
-			
-			resultado = statement.executeQuery();
-
-			return resultado != null && resultado.next();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return false;
+		return deletado;
 		
 	}
-	
-	
 
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import dao.ConteudoDAO;
-import excecoes.GrauConfiabilidadeAtualException;
 import excecoes.OpcaoInexistenteException;
 import model.ConteudoModel;
 import model.UsuarioModel;

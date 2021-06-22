@@ -29,5 +29,10 @@ public class DisciplinaModel {
 		return disciplinaPesquisada;
 		
 	}
+	
+	@Override
+	public String toString() {
+		return this.nome;
+	}
 
 }

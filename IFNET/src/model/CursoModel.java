@@ -68,8 +68,7 @@ public class CursoModel {
 
 	@Override
 	public String toString() {
-		return "Nome: " + this.nome + 
-				"Quantidade de Semestres: " + this.semestres;
+		return this.nome;
 	}
 	
 	

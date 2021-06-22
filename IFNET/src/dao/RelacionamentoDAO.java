@@ -167,14 +167,14 @@ public class RelacionamentoDAO {
 		
 	}
 	
-	public static ArrayList<String[]> usuariosMaisRelacionados() {
+	public static Object[][] usuariosMaisRelacionados() {
 		
 		Conexao conexao = new Conexao();	
 		ResultSet resultado;
 		
-		ArrayList<String[]> dados = new ArrayList<>();
-		
 		int voltas = 0;
+		
+		Object[][] dados = new Object[10][3];
 		
 		try {
 			
@@ -186,12 +186,10 @@ public class RelacionamentoDAO {
 			
 			while((resultado != null && resultado.next()) && voltas < 10) {
 				
-				String[] relacionamento = new String [2];
+				dados[voltas][0] = UsuarioDAO.selecionaUsuario(resultado.getString("usuario_relaciona")).getNome();
+				dados[voltas][1] = resultado.getString("usuario_relaciona");
+				dados[voltas][2] = resultado.getString("count(*)");
 				
-				relacionamento[0] = resultado.getString("usuario_relaciona");
-				relacionamento[1] = resultado.getString("count(*)");
-			
-				dados.add(relacionamento);
 				voltas++;
 			}
 			

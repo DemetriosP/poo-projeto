@@ -54,10 +54,7 @@ public class ConteudoModel {
 
 	@Override
 	public String toString() {
-		return "Código: " + this.codigo +
-				"\nTitulo: " + this.titulo + 
-				"\nTipo: " + this.tipo + 
-				"\nPublicador: " + publicador.getNome();
+		return this.titulo;
 	}
 
 }

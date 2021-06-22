@@ -207,11 +207,12 @@ public class GrupoDAO {
 		
 		try {
 			
-			String query = "select * from grupo where disciplina_id like ?";
+			String query = "select * from grupo where disciplina_id like ? and tipo like ?";
 			
 			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
 			
-			statement.setString(1, "%" + disciplinaID + "%");
+			statement.setString(1, disciplinaID);
+			statement.setString(2, "Pesquisa");
 		
 			resultado = statement.executeQuery();
 			
@@ -237,12 +238,12 @@ public class GrupoDAO {
 		return grupos;
 	}
 	
-	public static ArrayList<String[]> consultarGruposMaisUsuarios() {
+	public static Object[][] consultarGruposMaisUsuarios() {
 		
 		Conexao conexao = new Conexao();	
 		ResultSet resultado;
 		
-		ArrayList<String[]> dados = new ArrayList<>();
+		Object[][] dados = new Object[10][2];
 		
 		int voltas = 0;
 		
@@ -256,12 +257,9 @@ public class GrupoDAO {
 			
 			while((resultado != null && resultado.next()) && voltas < 10) {
 				
-				String[] relacionamento = new String [2];
-				
-				relacionamento[0] = resultado.getString("grupo_id");
-				relacionamento[1] = resultado.getString("count(*)");
+				dados[voltas][0] = selecionarGrupo(resultado.getInt("grupo_id")).getNome();
+				dados[voltas][1] = resultado.getString("count(*)");
 			
-				dados.add(relacionamento);
 				voltas++;
 			}
 			

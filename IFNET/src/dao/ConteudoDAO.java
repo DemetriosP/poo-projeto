@@ -70,6 +70,49 @@ public class ConteudoDAO {
 		return conteudos;
 	}
 	
+	public static ArrayList<ConteudoModel> selecionaConteudos(String titulo){
+		
+		Conexao conexao = new Conexao();
+		ResultSet resultado;
+		ArrayList<ConteudoModel> conteudos = new ArrayList<>();
+		String tipo, usuarioID;
+		int codigo;
+		
+		try {
+			
+			String query = "select * from conteudo where titulo like ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, "%" + titulo + "%");
+		
+			resultado = statement.executeQuery();
+			
+			while(resultado != null && resultado.next()){
+				
+				codigo = resultado.getInt("conteudo_id");
+				titulo = resultado.getString("titulo");
+				tipo = resultado.getString("tipo");
+				usuarioID = resultado.getString("usuario_id");
+				
+				if(AlunoDAO.eAluno(usuarioID)) {
+					conteudos.add( new ConteudoModel(titulo, tipo, AlunoDAO.selecionarAluno(usuarioID), codigo));
+				} else if(ProfessorDAO.eProfessor(usuarioID)) {
+					conteudos.add( new ConteudoModel(titulo, tipo, ProfessorDAO.selecionarProfessor(usuarioID), codigo));
+				}
+				
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return conteudos;
+		
+	} 
+	
 	public static String selecionarConteudo(int codigo) {
 		
 		Conexao conexao = new Conexao();

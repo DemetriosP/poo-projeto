@@ -238,7 +238,7 @@ public class GrupoDAO {
 		return grupos;
 	}
 	
-	public static Object[][] consultarGruposMaisUsuarios() {
+	public static Object[][] consultarGruposMaisUsuariosIG() {
 		
 		Conexao conexao = new Conexao();	
 		ResultSet resultado;
@@ -404,6 +404,43 @@ public class GrupoDAO {
 			e.printStackTrace();
 		}
 		
+	}
+	
+public static ArrayList<String[]> consultarGruposMaisUsuarios() {
+		
+		Conexao conexao = new Conexao();	
+		ResultSet resultado;
+		
+		ArrayList<String[]> dados = new ArrayList<>();
+		
+		int voltas = 0;
+		
+		try {
+			
+			String query = "select grupo_id, count(*) from usuarios_grupo group by grupo_id having count(*) > 0 order by count(*) desc";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			resultado = statement.executeQuery();
+			
+			while((resultado != null && resultado.next()) && voltas < 10) {
+				
+				String[] relacionamento = new String [2];
+				
+				relacionamento[0] = resultado.getString("grupo_id");
+				relacionamento[1] = resultado.getString("count(*)");
+			
+				dados.add(relacionamento);
+				voltas++;
+			}
+			
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return dados;
 	}
 
 }

@@ -79,8 +79,7 @@ public class UsuarioModel {
 
 	@Override
 	public String toString() {
-		return "Nome: " + getNome() + 
-				"\nProntuário: " + getProntuario();
+		return this.nome;
 	}
 
 }

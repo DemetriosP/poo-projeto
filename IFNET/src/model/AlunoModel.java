@@ -33,10 +33,7 @@ public class AlunoModel extends UsuarioModel{
 
 	@Override
 	public String toString() {
-		return "Nome: " + getNome() + 
-				"\nProntuário: " + getProntuario() +
-				"\nE-mail: " + this.email +
-				"\nCurso: " + this.curso.getNome();
+		return this.getNome();
 	}
 	
 	

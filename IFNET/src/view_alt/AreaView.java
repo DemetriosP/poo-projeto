@@ -71,6 +71,11 @@ public class AreaView extends JFrame {
 		nomeField.setColumns(10);
 		
 		JButton cadastrarButton = new JButton("Cadastrar");
+		cadastrarButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AreaDAO.inserirArea(new AreaModel(nomeField.getText()));
+			}
+		});
 		cadastrarButton.setBounds(169, 204, 89, 23);
 		cadastrar.add(cadastrarButton);
 		
@@ -90,6 +95,8 @@ public class AreaView extends JFrame {
 		JButton excluirButton = new JButton("Excluir");
 		excluirButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				AreaDAO.excluirArea(((AreaModel) areaBox.getSelectedItem()).getNome());
+				areaBox.setModel(areaModel());
 			}
 		});
 		excluirButton.setBounds(159, 205, 89, 23);

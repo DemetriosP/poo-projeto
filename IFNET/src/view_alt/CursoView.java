@@ -170,5 +170,4 @@ public class CursoView extends JFrame {
 		
 		return dados;
 	}
-
 }

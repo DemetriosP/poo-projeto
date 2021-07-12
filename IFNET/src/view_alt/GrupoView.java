@@ -247,7 +247,7 @@ public class GrupoView extends JFrame {
 	
 	private Object[][] dadosMaisUsuarios(){
 		
-		Object[][] dados  = GrupoDAO.consultarGruposMaisUsuarios();
+		Object[][] dados  = GrupoDAO.consultarGruposMaisUsuariosIG();
 		
 		return dados;
 	}

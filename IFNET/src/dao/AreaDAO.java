@@ -61,4 +61,29 @@ public class AreaDAO {
 		
 	}
 	
+	public static boolean excluirArea(String areaID) {
+		
+		Conexao conexao = new Conexao();
+		boolean deletado = true;
+		
+		try {
+			
+			String query = "delete from area_atuacao where area_id = ?";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			statement.setString(1, areaID);
+			
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLException e) {
+			System.out.println("Você não pode excluir essa area, pois ela tem ligações com outras tabelas.");
+			deletado = false;
+		}
+		
+		return deletado;
+		
+	}
+	
 }

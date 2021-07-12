@@ -32,10 +32,7 @@ public class ProfessorModel extends UsuarioModel{
 	}
 	
 	public String toString() {
-		return "Nome: " + getNome() + 
-				"\nProntu·rio: " + getProntuario() +
-				"\n¡rea: " + this.area.getNome() +
-				"\nDisciplina: " + this.disciplMinistrada.getNome();
+		return this.getNome();
 	}
 	
 	

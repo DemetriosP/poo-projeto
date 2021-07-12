@@ -167,7 +167,7 @@ public class RelacionamentoDAO {
 		
 	}
 	
-	public static Object[][] usuariosMaisRelacionados() {
+	public static Object[][] usuariosMaisRelacionadosIG() {
 		
 		Conexao conexao = new Conexao();	
 		ResultSet resultado;
@@ -190,6 +190,44 @@ public class RelacionamentoDAO {
 				dados[voltas][1] = resultado.getString("usuario_relaciona");
 				dados[voltas][2] = resultado.getString("count(*)");
 				
+				voltas++;
+			}
+			
+			statement.execute();
+			statement.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return dados;
+	}
+	
+public static ArrayList<String[]> usuariosMaisRelacionados() {
+		
+		Conexao conexao = new Conexao();	
+		ResultSet resultado;
+		
+		ArrayList<String[]> dados = new ArrayList<>();
+		
+		int voltas = 0;
+		
+		try {
+			
+			String query = "select usuario_relaciona, count(*) from relacionamento group by usuario_relaciona having count(*) > 0 order by count(*) desc";
+			
+			PreparedStatement statement = conexao.getConexao().prepareStatement(query);
+			
+			resultado = statement.executeQuery();
+			
+			while((resultado != null && resultado.next()) && voltas < 10) {
+				
+				String[] relacionamento = new String [2];
+				
+				relacionamento[0] = resultado.getString("usuario_relaciona");
+				relacionamento[1] = resultado.getString("count(*)");
+			
+				dados.add(relacionamento);
 				voltas++;
 			}
 			
